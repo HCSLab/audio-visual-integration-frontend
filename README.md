@@ -1,4 +1,4 @@
-# control-panel
+# audio-visual-integration-frontend
 
 ## Project setup
 ```
