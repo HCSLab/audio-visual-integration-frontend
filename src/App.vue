@@ -53,7 +53,7 @@
       <p class="text-right">July 2020</p>
     </b-modal>
 
-    <div style="background-color:#000000;" class="container-fluid">
+    <div style="background-color:#000000; pointer-events: none" class="container-fluid">
       <div class="container">
         <vue-plyr ref="video" :options="video_options">
           <video playsinline poster src="./assets/the_tango.mp4"></video>
@@ -76,10 +76,9 @@
           Try to adjust the soundtrack to fit the video by clicking the buttons below. If you are ready, click
           <button
             type="button"
-            class="btn btn-sm btn-success"
+            class="btn btn-sm btn-primary"
             @click="startTest()"
-          >start</button> button here to play the video and audio. If you would like to restart the test, click
-          <button type="button" class="btn btn-sm btn-warning" @click="restartTest()">restart</button> button here. If you find it too difficult to synchronized the video and the soundtrack, feel free to click the give up button blow.
+          >start</button> button here to play the video and audio. If you would like to restart the test, re-click the start button. If you find it too difficult to synchronized the video and the soundtrack, feel free to click the give up button blow.
         </p>
         <hr />
 
@@ -140,6 +139,7 @@ export default {
   components: {},
   data() {
     return {
+      delay: Math.random() * 3 - 1.5,
       adjust_amount: 0.3,
       about_modal: true,
       operation_storage: [],
@@ -163,15 +163,16 @@ export default {
       return this.$refs.audio.player;
     },
   },
-  mounted() {},
+  mounted() {
+    console.log(this.delay)
+  },
   methods: {
     startTest() {
-      this.video.play();
+      this.video.currentTime = 5;
+      this.audio.currentTime = 5 + this.delay;
+
       this.audio.play();
-    },
-    restartTest() {
-      this.video.restart();
-      this.audio.restart();
+      this.video.play();
       this.operation_storage = [];
     },
     ForwardTime() {
