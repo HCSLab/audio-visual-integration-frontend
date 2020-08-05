@@ -4,11 +4,11 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 import 'bootstrap'
 import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import VuePlyr from 'vue-plyr'
+import axios from 'axios'
+import VueAxios from 'vue-axios'
 
-// Install BootstrapVue
-Vue.use(BootstrapVue)
-// Optionally install the BootstrapVue icon components plugin
-Vue.use(IconsPlugin)
+
+Vue.use(BootstrapVue, IconsPlugin, axios, VueAxios)
 
 Vue.use(VuePlyr, {
   plyr: {
@@ -17,7 +17,9 @@ Vue.use(VuePlyr, {
   emit: ['ended']
 })
 
+
 Vue.config.productionTip = false
+Vue.prototype.$http = axios
 
 new Vue({
   render: h => h(App),

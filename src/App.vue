@@ -117,16 +117,16 @@
           type="button"
           class="btn btn-success"
           style="margin-right:10px"
-          @click="GoodIntergration()"
+          @click="intergrationResult(true)"
         >Done! It's synchronized</button>
         <button
           type="button"
           class="btn btn-danger"
           style="margin-left:10px"
-          @click="BadIntergration()"
+          @click="intergrationResult(false)"
         >I give up</button>
       </div>
-
+      {{info}}
       <p class="text-muted text-center" style="margin-top:100px">Design and Develop by Human-Cloud System Laboratory. All Right Reserved © 2020 ｜ <a href="https://hcslab.cuhk.edu.cn">hcs.sse.cuhk.edu.cn</a></p>
       <p class="text-muted text-center">Powered by <a href="https://vuejs.org/">Vue.js</a>, <a href="https://getbootstrap.com/">Bootstrap</a>, <a href="https://github.com/sampotts/plyr">sampotts/plyr</a> & coffee ☕️</p>
     </div>
@@ -134,11 +134,13 @@
 </template>
 
 <script>
+const axios = require('axios');
 export default {
   name: "App",
   components: {},
   data() {
     return {
+      video_list: null,
       delay: Math.random() * 3 - 1.5,
       adjust_amount: 0.3,
       about_modal: true,
@@ -164,7 +166,11 @@ export default {
     },
   },
   mounted() {
+    axios.get(' http://localhost:3000/available_videos')
+      .then(response => (this.video_list = response))
+      
     console.log(this.delay)
+    console.log(this.video_list)
   },
   methods: {
     startTest() {
@@ -195,17 +201,8 @@ export default {
       });
       console.log(this.operation_storage);
     },
-    BadIntergration(){
-      this.toastCount++;
-      this.$bvToast.toast("Your records have been uploaded", {
-        title: "Submisstion Complete",
-        autoHideDelay: 1000,
-        appendToast: false,
-        variant: "success",
-        solid: true,
-      });
-    },
-    GoodIntergration(){
+    intergrationResult(result){
+      console.log(result)
       this.toastCount++;
       this.$bvToast.toast("Your records have been uploaded", {
         title: "Submisstion Complete",

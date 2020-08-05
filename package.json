@@ -10,7 +10,8 @@
   "dependencies": {
     "core-js": "^3.6.5",
     "video.js": "^7.8.4",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vue-axios": "^2.1.5"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.4.0",
