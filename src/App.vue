@@ -32,8 +32,12 @@
         
       </div>
     </nav>
+    <b-modal v-model="finish_modal" no-close-on-backdrop="true" no-close-on-esc="true" header-bg-variant="success" size="lg" title="Congratulations! Your test has been uploaded.">
+      <p> Thank you for your participance, your test result has been successfuly uploaded.</p>
+      <p> Here's the link to the questionnaire for this test: <a href="https://www.wjx.cn/m/87365649.aspx">Questionnaire</a></p>
+    </b-modal>
 
-    <b-modal v-model="about_modal" size="lg" title="About This Experiment">
+    <b-modal v-model="about_modal" no-close-on-backdrop="true" no-close-on-esc="true" size="lg" title="About This Experiment">
       <p>Audiovisual asynchrony is common during the stream live. It causes by unstable network or transmission delay during hardware wireless communication. In this experiment, we want to know to what extend the asynchrony affects experience of audiovisual as well as its perception sensitivity.</p>
 
       <p>A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of <strong>0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjusting audio track to be synchronous with visual track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.</p>
@@ -149,6 +153,7 @@ export default {
       audio_url: null,
       adjust_amount: 0.3,
       about_modal: true,
+      finish_modal: false,
       operation_storage: [],
       upload_result: {
         timestamp: null, 
@@ -294,6 +299,8 @@ export default {
             // stop video and audio
             this.video.stop()
             this.audio.stop()
+            // open finish modal
+            this.finish_modal = true
           })
           .catch(error=>{
             console.log(error);
