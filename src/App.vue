@@ -1,7 +1,7 @@
 <template>
   <div style="background-color:	#D3D3D3; height:1200px">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-      <a class="navbar-brand" href="#">HCS Lab: Audio-Visual Integration Test</a>
+      <a class="navbar-brand" href="#">Audio-Visual Integration Test</a>
       <button
         class="navbar-toggler"
         type="button"
@@ -26,29 +26,22 @@
             <a class="nav-link" href="#" @click="about_modal = !about_modal">About</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#">Contact</a>
+            <a class="nav-link" href="https://hcslab.cuhk.edu.cn/">Contact</a>
           </li>
         </ul>
-        <form class="form-inline my-2 my-lg-0">
-          <input class="form-control mr-sm-2" type="text" placeholder="Search" />
-          <button class="btn btn-secondary my-2 my-sm-0" type="submit">Search</button>
-        </form>
+        
       </div>
     </nav>
 
     <b-modal v-model="about_modal" size="lg" title="About This Experiment">
-      <p>You may have heard of audio visual integration, likely from an audio visual integrator when describing what they do. It’s a mainstream term in the industry, but for most audio visual integration is like the word strategy. People have an idea of what it means, but a cohesive definition doesn’t exactly roll off the tongue.</p>
-      <p>
-        We’ll start with audio visual-Audio visual is: “of or relating to both hearing and sight”.This makes sense when you think of video conferencing and how conversation is enhanced by the ability to see the person you’re talking to. Next is integration, defined by Merriam-Webster as “the action or process of integrating”. That’s not very helpful, so we dig deeper and find that
-        Integrating means: “to form, coordinate, or blend into a functioning or unified whole”.
-      </p>
-      <p>However, there’s another key piece to audio visual integration: design. Neurilink is an audio visual design and integration firm, we help people connect and communicate through audio visual technology.</p>
-      <p>AV design and integration is a lot more than hanging displays on a wall and plugging them in. The design piece is critical, it enables the team to integrate the technologies into a functioning solution. It requires trained designers to map out the entire system, making sure each technology is compatible and, when combined, able to create the outcome the customer envisions.</p>
-      <p>
-        Other elements of a solid audio visual system design are control system programming, user interface layouts, architectural drawing packages and system documentation. Each of these elements plays a key role in providing systems that function properly and reliably.
-        After the design process is complete, technicians can begin integrating the hardware. They physically go to the site, pull in wire, mount displays, install speakers and screens, connect the different electronic components, make sure everything functions properly.
-      </p>
-      <br />
+      <p>Audiovisual asynchrony is common during the stream live. It causes by unstable network or transmission delay during hardware wireless communication. In this experiment, we want to know to what extend the asynchrony affects experience of audiovisual as well as its perception sensitivity.</p>
+
+      <p>A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of <strong>0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjusting audio track to be synchronous with visual track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.</p>
+
+      <p>When you feel the clip video and soundtrack are synchronous, you can click <a class="text-success">“Done!”</a> button. The log of your operations will be submitted. Of course, you can click <a class="text-danger">“Give Up”</a> button if the adjust for synchronous annoying you. <strong>Plase stay in the screen before submit your result.</strong></p>
+
+      <p>We’d like you fill a questionnaire after experiment, all your personal information and experiments logs are only used for academia. Codes for the platform will be open source on GitHub.</p>
+      <p>Thanks for your participance!</p>
       <p class="text-right">HCS Laboratory, CUHK(SZ)</p>
       <p class="text-right">July 2020</p>
     </b-modal>
@@ -56,61 +49,63 @@
     <div style="background-color:#000000; pointer-events: none" class="container-fluid">
       <div class="container">
         <vue-plyr ref="video" :options="video_options">
-          <video playsinline poster src="./assets/the_tango.mp4"></video>
+          <video playsinline poster v-bind:src="this.video_url" type="video/mp4"></video>
         </vue-plyr>
       </div>
     </div>
 
-    <div class="container">
-      <vue-plyr ref="audio" :options="audio_options">
-        <audio>
-          <source src="./assets/the_tango.mp3" type="audio/mp3" />
-        </audio>
-      </vue-plyr>
-    </div>
+    <!-- <vue-plyr class="container" ref="audio" :options="audio_options">
+      <audio>
+        <source v-bind:src="audio_url" type="audio/mp3"/>
+      </audio>
+    </vue-plyr>-->
+
+    <vue-plyr ref="audio" :options="audio_options" style="pointer-events: none">
+      <audio v-bind:src="audio_url" controls></audio>
+    </vue-plyr>
 
     <hr />
     <div class="container">
       <div class="container" align="center">
         <p>
-          Try to adjust the soundtrack to fit the video by clicking the buttons below. If you are ready, click
+          Try to adjust the soundtrack to fit the video by clicking the buttons below. If you find it too difficult to synchronized the video and the soundtrack, feel free to click the give up button blow. If you are ready, click
           <button
             type="button"
-            class="btn btn-sm btn-primary"
+            class="btn btn btn-primary"
             @click="startTest()"
-          >start</button> button here to play the video and audio. If you would like to restart the test, re-click the start button. If you find it too difficult to synchronized the video and the soundtrack, feel free to click the give up button blow.
+          >start</button> button here to play the video and audio. If you would like to restart the test, re-click the start button.
         </p>
         <hr />
 
-          <div style="width:55%">
-            <label for="range">Adjust Step: {{ adjust_amount }} Seconds</label>
-            <b-form-input
-              id="range"
-              v-model="adjust_amount"
-              type="range"
-              min="0.1"
-              max="0.9"
-              step="0.1"
-            ></b-form-input>
-          </div>
+        <div style="width:55%">
+          <label for="range">Adjust Step: {{ adjust_amount }} Seconds</label>
+          <b-form-input
+            id="range"
+            v-model="adjust_amount"
+            type="range"
+            min="0.1"
+            max="0.9"
+            step="0.1"
+          ></b-form-input>
+        </div>
 
-          <div class="form-inline">
-            <div style="width:100%;align:center">
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                style="margin-right:5px"
-                @click="RewindTime()"
-              >{{ adjust_amount }} Slower</button>
+        <div class="form-inline">
+          <div style="width:100%;align:center">
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              style="margin-right:5px"
+              @click="RewindTime()"
+            >{{ adjust_amount }} Slower</button>
 
-              <button
-                type="button"
-                class="btn btn-outline-primary"
-                style="margin-left:5px"
-                @click="ForwardTime()"
-              >{{ adjust_amount }} Faster</button>
-            </div>
+            <button
+              type="button"
+              class="btn btn-outline-primary"
+              style="margin-left:5px"
+              @click="ForwardTime()"
+            >{{ adjust_amount }} Faster</button>
           </div>
+        </div>
 
         <br />
         <button
@@ -126,25 +121,43 @@
           @click="intergrationResult(false)"
         >I give up</button>
       </div>
-      {{info}}
-      <p class="text-muted text-center" style="margin-top:100px">Design and Develop by Human-Cloud System Laboratory. All Right Reserved © 2020 ｜ <a href="https://hcslab.cuhk.edu.cn">hcs.sse.cuhk.edu.cn</a></p>
-      <p class="text-muted text-center">Powered by <a href="https://vuejs.org/">Vue.js</a>, <a href="https://getbootstrap.com/">Bootstrap</a>, <a href="https://github.com/sampotts/plyr">sampotts/plyr</a> & coffee ☕️</p>
+      <p class="text-muted text-center" style="margin-top:100px">
+        Design and Develop by Human-Cloud System Laboratory. All Right Reserved © 2020 ｜
+        <a href="https://hcslab.cuhk.edu.cn">hcs.sse.cuhk.edu.cn</a> |
+        <a href="https://github.com/HCSLab">Source Code</a>
+      </p>
+      <p class="text-muted text-center">
+        Powered by
+        <a href="https://vuejs.org/">Vue.js</a>,
+        <a href="https://getbootstrap.com/">Bootstrap</a>,
+        <a href="https://github.com/sampotts/plyr">sampotts/plyr</a> & coffee ☕️
+      </p>
     </div>
   </div>
 </template>
 
 <script>
-const axios = require('axios');
+const axios = require("axios");
 export default {
   name: "App",
   components: {},
   data() {
     return {
       video_list: null,
-      delay: Math.random() * 3 - 1.5,
+      select_name: null,
+      video_url: null,
+      audio_url: null,
       adjust_amount: 0.3,
       about_modal: true,
       operation_storage: [],
+      upload_result: {
+        timestamp: null, 
+        video_name: null, 
+        rand: null,
+        indicator: null, 
+        actions: null, 
+      },
+      // player setting
       video_options: {
         autoplay: false,
         controls: [],
@@ -153,7 +166,7 @@ export default {
       },
       audio_options: {
         autoplay: false,
-        controls: ["current-time", "volume"],
+        controls: ["current-time"], // ['progress', 'volume']
       },
     };
   },
@@ -165,14 +178,32 @@ export default {
       return this.$refs.audio.player;
     },
   },
+  created() {
+    this.base_url = "http://localhost:3000";
+    (this.delay = Math.random() * 3 - 1.5),
+      axios
+        .get(this.base_url + "/available_videos")
+        .then((response) => {
+          this.video_list = response.data.video_names;
+          let index = Math.floor(Math.random() * this.video_list.length);
+          this.select_name = this.video_list[index];
+          this.video_url =
+            this.base_url + "/video/" + this.select_name + ".mp4";
+          this.audio_url =
+            this.base_url + "/audio/" + this.select_name + ".mp3";
+
+          // for development
+          // console.log(this.delay);
+          // console.log(this.audio_url);
+          // console.log(this.video_url);
+        })
+        .catch((error) => console.log(error));
+  },
   mounted() {
-    axios.get(' http://localhost:3000/available_videos')
-      .then(response => (this.video_list = response))
-      
-    console.log(this.delay)
-    console.log(this.video_list)
+    // for development
   },
   methods: {
+    // start the test, reset the operation storage
     startTest() {
       this.video.currentTime = 5;
       this.audio.currentTime = 5 + this.delay;
@@ -181,36 +212,101 @@ export default {
       this.video.play();
       this.operation_storage = [];
     },
+    // put forward audio time
     ForwardTime() {
-      var amount = this.adjust_amount;
-      this.audio.forward(amount);
-      this.operation_storage.push({
-        'opertaion': amount * 1,
-        'video_time': this.video.currentTime,
-        'audio_time': this.audio.currentTime
-      });
-      console.log(this.operation_storage);
+      if(this.video.playing){
+        var amount = this.adjust_amount;
+        this.audio.forward(amount);
+        this.operation_storage.push([
+          this.video.currentTime,
+          this.audio.currentTime,
+          amount * 1,
+        ]);
+        // console.log(this.operation_storage);
+      }else{
+        // handle clicking when video is stop
+        this.toastCount++;
+        this.$bvToast.toast("Press the start button first", {
+          title: "Alert",
+          autoHideDelay: 2000,
+          appendToast: false,
+          variant: "warning",
+          solid: true,
+        });
+      }
     },
+    // roll backward audio time
     RewindTime() {
-      var amount = this.adjust_amount;
-      this.audio.rewind(amount);
-      this.operation_storage.push({
-        'operation': amount * -1,
-        'video_time': this.video.currentTime,
-        'audio_time': this.audio.currentTime
-      });
-      console.log(this.operation_storage);
+      if(this.video.playing){
+        var amount = this.adjust_amount;
+        this.audio.rewind(amount);
+        this.operation_storage.push([
+          this.video.currentTime,
+          this.audio.currentTime,
+          amount * -1
+        ]);
+        // console.log(this.operation_storage);
+      }else{
+        // handle clicking when video is stop
+        this.toastCount++;
+        this.$bvToast.toast("Press the start button first", {
+          title: "Alert",
+          autoHideDelay: 2000,
+          appendToast: false,
+          variant: "warning",
+          solid: true,
+        });
+      }
     },
-    intergrationResult(result){
-      console.log(result)
-      this.toastCount++;
-      this.$bvToast.toast("Your records have been uploaded", {
-        title: "Submisstion Complete",
-        autoHideDelay: 1000,
-        appendToast: false,
-        variant: "success",
-        solid: true,
-      });
+    // collect the operation storage and send to backend
+    intergrationResult(result) {
+      if(this.operation_storage.length == 0){
+        // handle empty submisstion
+        this.toastCount++;
+        this.$bvToast.toast("At least have a try please.", {
+          title: "Submisstion Complete",
+          autoHideDelay: 2000,
+          appendToast: false,
+          variant: "warning",
+          solid: true,
+        });
+      }else{
+        // set post json: upload_result
+        this.upload_result.timestamp = Date()
+        this.upload_result.indicator = result ? 'good': 'bad';
+        this.upload_result.indicator = result ? 'good': 'bad';
+        this.upload_result.video_name = this.select_name;
+        this.upload_result.rand = this.delay;
+        this.upload_result.actions = this.operation_storage.map(e => e.join(',')).join(';');
+
+        console.log(this.upload_result)
+
+        axios.post(this.base_url + "/upload_result", this.upload_result)
+          .then(response=>{
+            this.toastCount++;
+            this.$bvToast.toast("Your records have been uploaded", {
+              title: "Submisstion Complete",
+              autoHideDelay: 2000,
+              appendToast: false,
+              variant: "success",
+              solid: true,
+            });
+            // stop video and audio
+            this.video.stop()
+            this.audio.stop()
+          })
+          .catch(error=>{
+            console.log(error);
+            this.toastCount++;
+            this.$bvToast.toast("Something went wrong. Please try again", {
+              title: "Error",
+              autoHideDelay: 2000,
+              appendToast: false,
+              variant: "danger",
+              solid: true,
+            });
+          })
+      }
     },
   },
 };
