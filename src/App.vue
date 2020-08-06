@@ -29,20 +29,47 @@
             <a class="nav-link" href="https://hcslab.cuhk.edu.cn/">Contact</a>
           </li>
         </ul>
-        
       </div>
     </nav>
-    <b-modal v-model="finish_modal" no-close-on-backdrop="true" no-close-on-esc="true" header-bg-variant="success" size="lg" title="Congratulations! Your test has been uploaded.">
-      <p> Thank you for your participance, your test result has been successfuly uploaded.</p>
-      <p> Here's the link to the questionnaire for this test: <a href="https://www.wjx.cn/m/87365649.aspx">Questionnaire</a></p>
+    <b-modal
+      v-model="finish_modal"
+      :no-close-on-backdrop="modal_property"
+      :no-close-on-esc="modal_property"
+      header-bg-variant="success"
+      size="lg"
+      title="Congratulations! Your test has been uploaded."
+    >
+      <p>
+        Thank you for your participance, your test result has been successfuly uploaded. Please copy the
+        <strong>Session ID</strong> before enter the questionnaire. <strong>Click the number below</strong> to copy your ID:
+      </p>
+      <h2 class="text-center text-large text-success" ref="copy" @click="CopyID()">{{this.session_id}}</h2>
+      <p>If you have the ID on your clipboard, here's the link to the questionnaire for this test:
+        <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u"
+        >Questionnaire</a>
+      </p>
     </b-modal>
 
-    <b-modal v-model="about_modal" no-close-on-backdrop="true" no-close-on-esc="true" size="lg" title="About This Experiment">
+    <b-modal
+      v-model="about_modal"
+      :no-close-on-backdrop="modal_property"
+      :no-close-on-esc="modal_property"
+      size="lg"
+      title="About This Experiment"
+    >
       <p>Audiovisual asynchrony is common during the stream live. It causes by unstable network or transmission delay during hardware wireless communication. In this experiment, we want to know to what extend the asynchrony affects experience of audiovisual as well as its perception sensitivity.</p>
 
-      <p>A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of <strong>0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjusting audio track to be synchronous with visual track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.</p>
+      <p>
+        A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of
+        <strong>0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjusting audio track to be synchronous with visual track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
+      </p>
 
-      <p>When you feel the clip video and soundtrack are synchronous, you can click <a class="text-success">“Done!”</a> button. The log of your operations will be submitted. Of course, you can click <a class="text-danger">“Give Up”</a> button if the adjust for synchronous annoying you. <strong>Plase stay in the screen before submit your result.</strong></p>
+      <p>
+        When you feel the clip video and soundtrack are synchronous, you can click
+        <a class="text-success">“Done!”</a> button. The log of your operations will be submitted. Of course, you can click
+        <a class="text-danger">“Give Up”</a> button if the adjust for synchronous annoying you.
+        <strong>Plase stay in the screen before submit your result.</strong>
+      </p>
 
       <p>We’d like you fill a questionnaire after experiment, all your personal information and experiments logs are only used for academia. Codes for the platform will be open source on GitHub.</p>
       <p>Thanks for your participance!</p>
@@ -127,7 +154,9 @@
       </div>
       <p class="text-muted text-center" style="margin-top:100px">
         Design and Develop by Human-Cloud System Laboratory. All Right Reserved © 2020 ｜
-        <a href="https://hcslab.cuhk.edu.cn">hcs.sse.cuhk.edu.cn</a> |
+        <a
+          href="https://hcslab.cuhk.edu.cn"
+        >hcs.sse.cuhk.edu.cn</a> |
         <a href="https://github.com/HCSLab">Source Code</a>
       </p>
       <p class="text-muted text-center">
@@ -147,6 +176,7 @@ export default {
   components: {},
   data() {
     return {
+      modal_property: true,
       video_list: null,
       select_name: null,
       video_url: null,
@@ -155,12 +185,14 @@ export default {
       about_modal: true,
       finish_modal: false,
       operation_storage: [],
+      session_id: null,
+      //upload_result
       upload_result: {
-        timestamp: null, 
-        video_name: null, 
+        timestamp: null,
+        video_name: null,
         rand: null,
-        indicator: null, 
-        actions: null, 
+        indicator: null,
+        actions: null,
       },
       // player setting
       video_options: {
@@ -185,29 +217,43 @@ export default {
   },
   created() {
     this.base_url = "http://localhost:3000";
-    (this.delay = Math.random() * 3 - 1.5),
-      axios
-        .get(this.base_url + "/available_videos")
-        .then((response) => {
-          this.video_list = response.data.video_names;
-          let index = Math.floor(Math.random() * this.video_list.length);
-          this.select_name = this.video_list[index];
-          this.video_url =
-            this.base_url + "/video/" + this.select_name + ".mp4";
-          this.audio_url =
-            this.base_url + "/audio/" + this.select_name + ".mp3";
+    this.delay = Math.random() * 3 - 1.5;
 
-          // for development
-          // console.log(this.delay);
-          // console.log(this.audio_url);
-          // console.log(this.video_url);
-        })
-        .catch((error) => console.log(error));
+    // generate session_id by time
+    // let current_date = new Date().valueOf();
+    // this.session_id = ((Math.random() * current_date) / 1000)
+    //   .toString(36)
+    //   .slice(-8);
+    // console.log(this.session_id);
+    //get available videos
+    axios
+      .get(this.base_url + "/available_videos")
+      .then((response) => {
+        this.video_list = response.data.video_names;
+        let index = Math.floor(Math.random() * this.video_list.length);
+        this.select_name = this.video_list[index];
+        this.video_url = this.base_url + "/video/" + this.select_name + ".mp4";
+        this.audio_url = this.base_url + "/audio/" + this.select_name + ".mp3";
+
+        // for development
+        // console.log(this.delay);
+        // console.log(this.audio_url);
+        // console.log(this.video_url);
+      })
+      .catch((error) => console.log(error));
   },
   mounted() {
     // for development
   },
   methods: {
+    CopyID(){
+      window.getSelection().removeAllRanges()
+      const copyDOM = this.$refs.copy
+      const range = document.createRange()
+      range.selectNode(copyDOM)
+      window.getSelection().addRange(range)
+      document.execCommand("copy");
+    },
     // start the test, reset the operation storage
     startTest() {
       this.video.currentTime = 5;
@@ -219,7 +265,7 @@ export default {
     },
     // put forward audio time
     ForwardTime() {
-      if(this.video.playing){
+      if (this.video.playing) {
         var amount = this.adjust_amount;
         this.audio.forward(amount);
         this.operation_storage.push([
@@ -228,7 +274,7 @@ export default {
           amount * 1,
         ]);
         // console.log(this.operation_storage);
-      }else{
+      } else {
         // handle clicking when video is stop
         this.toastCount++;
         this.$bvToast.toast("Press the start button first", {
@@ -242,16 +288,16 @@ export default {
     },
     // roll backward audio time
     RewindTime() {
-      if(this.video.playing){
+      if (this.video.playing) {
         var amount = this.adjust_amount;
         this.audio.rewind(amount);
         this.operation_storage.push([
           this.video.currentTime,
           this.audio.currentTime,
-          amount * -1
+          amount * -1,
         ]);
         // console.log(this.operation_storage);
-      }else{
+      } else {
         // handle clicking when video is stop
         this.toastCount++;
         this.$bvToast.toast("Press the start button first", {
@@ -265,7 +311,7 @@ export default {
     },
     // collect the operation storage and send to backend
     intergrationResult(result) {
-      if(this.operation_storage.length == 0){
+      if (this.operation_storage.length == 0) {
         // handle empty submisstion
         this.toastCount++;
         this.$bvToast.toast("At least have a try please.", {
@@ -275,19 +321,23 @@ export default {
           variant: "warning",
           solid: true,
         });
-      }else{
+      } else {
         // set post json: upload_result
-        this.upload_result.timestamp = Date()
-        this.upload_result.indicator = result ? 'good': 'bad';
-        this.upload_result.indicator = result ? 'good': 'bad';
+        this.upload_result.timestamp, this.session_id = (new Date()).valueOf().toString();
+        this.upload_result.indicator = result ? "good" : "bad";
+        this.upload_result.indicator = result ? "good" : "bad";
         this.upload_result.video_name = this.select_name;
         this.upload_result.rand = this.delay;
-        this.upload_result.actions = this.operation_storage.map(e => e.join(',')).join(';');
+        this.upload_result.actions = this.operation_storage
+          .map((e) => e.join(","))
+          .join(";");
 
-        console.log(this.upload_result)
+        // Development usage
+        // console.log(this.upload_result);
 
-        axios.post(this.base_url + "/upload_result", this.upload_result)
-          .then(response=>{
+        axios
+          .post(this.base_url + "/upload_result", this.upload_result)
+          .then((response) => {
             this.toastCount++;
             this.$bvToast.toast("Your records have been uploaded", {
               title: "Submisstion Complete",
@@ -297,12 +347,13 @@ export default {
               solid: true,
             });
             // stop video and audio
-            this.video.stop()
-            this.audio.stop()
+            this.video.stop();
+            this.audio.stop();
+
             // open finish modal
-            this.finish_modal = true
+            this.finish_modal = true;
           })
-          .catch(error=>{
+          .catch((error) => {
             console.log(error);
             this.toastCount++;
             this.$bvToast.toast("Something went wrong. Please try again", {
@@ -312,7 +363,7 @@ export default {
               variant: "danger",
               solid: true,
             });
-          })
+          });
       }
     },
   },
