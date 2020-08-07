@@ -216,7 +216,7 @@ export default {
     },
   },
   created() {
-    this.base_url = "http://localhost:3000";
+    this.base_url = "";
     this.delay = Math.random() * 3 - 1.5;
 
     // generate session_id by time
