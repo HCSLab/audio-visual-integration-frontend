@@ -86,8 +86,14 @@
       <p class="text-right">July 2020</p>
     </b-modal>
 
-    <div style="background-color:#000000; pointer-events: none" class="container-fluid">
-      <div class="container">
+    <div style="background-color:#000000;" class="container-fluid">
+      
+      <div class="alert alert-dismissible alert-light">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <h6 style="padding-top:3px"><strong>Heads up!</strong> Now it's playing <a href="#" class="alert-link text-info">{{this.select_name}}</a>, please keep this in mind.</h6>
+      </div>
+
+      <div class="container" style="pointer-events: none">
         <vue-plyr ref="video" :options="video_options">
           <video playsinline poster v-bind:src="this.video_url" type="video/mp4"></video>
         </vue-plyr>
@@ -207,7 +213,7 @@ export default {
       // player setting
       video_options: {
         autoplay: false,
-        controls: [],
+        controls: [], // ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen']
         volume: 0,
         ratio: "16:9",
       },
