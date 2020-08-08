@@ -158,12 +158,14 @@
         <button
           type="button"
           class="btn btn-success"
+          v-bind:disabled="duplicate_submission"
           style="margin-right:10px"
           @click="intergrationResult(true)"
         >Done! It's synchronized</button>
         <button
           type="button"
           class="btn btn-danger"
+          v-bind:disabled="duplicate_submission"
           style="margin-left:10px"
           @click="intergrationResult(false)"
         >I give up</button>
@@ -205,6 +207,7 @@ export default {
       operation_storage: [],
       session_id: null,
       give_up_count: 0,
+      duplicate_submission: false,
       //upload_result
       upload_result: {
         timestamp: null,
@@ -435,6 +438,7 @@ export default {
 
             // open finish modal
             this.finish_modal = true;
+            this.duplicate_submission = true;
           })
           .catch((error) => {
             console.log(error);
