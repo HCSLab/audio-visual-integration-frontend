@@ -113,7 +113,7 @@
     <hr />
     <div class="container">
       <div class="container" align="center">
-        <p>
+        <p v-show="!guide_switch">
           Try to  <strong class="text-info">adjust the soundtrack to fit the video</strong> by clicking the buttons below. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you find it too difficult to synchronized the video and the soundtrack, feel free to click the <strong class="text-danger">give up</strong> button blow. If you are ready, click
           <button
             type="button"
@@ -121,6 +121,7 @@
             @click="startTest()"
           >start</button> button here to play the video and audio. To <strong class="text-info">restart the test, re-click the start button</strong>.
         </p>
+        <p v-show="guide_switch"><strong class="text-danger">There's no way back. You have entered the "Just Do It" mode, please finish finish the test with "Just Do It" clip or Refresh the window to start a new session. </strong></p>
         <hr />
 
         <div style="width:55%">
@@ -191,6 +192,7 @@ export default {
   components: {},
   data() {
     return {
+      guide_switch: false,
       modal_property: true,
       video_list: null,
       select_name: null,
@@ -279,12 +281,18 @@ export default {
     },
     // start the test, reset the operation storage
     startTest() {
-      this.video.once('canplay', event=>{
-        this.video.currentTime = 5;
-      });
-      this.audio.once('canplay', event=>{
-        this.audio.currentTime = 5 + this.delay;
-      })
+      if (this.give_up_count >=3){
+        this.video.once('canplay', event=>{
+          this.video.currentTime = 5;
+        });
+        this.audio.once('canplay', event=>{
+          this.audio.currentTime = 5 + this.delay;
+        })
+      }else{
+          this.video.currentTime = 5;
+          this.audio.currentTime = 5 + this.delay;
+      }
+      
 
       this.audio.volume = 1;
       this.audio.play();
@@ -342,9 +350,9 @@ export default {
     // collect the operation storage and send to backend
     intergrationResult(result) {
       if (this.operation_storage.length == 0 && this.give_up_count>=3) {
+        // change guide words
+        this.guide_switch = true;
         // play just_do_it
-        
-        // this.video.source = this.base_url + "/video/just_do_it.mp4";
         this.video.source = {
             type: 'video',
             title: 'just_do_it_video',
@@ -356,7 +364,7 @@ export default {
                 } 
             ]
         };
-        // this.audio.source = this.base_url + "/audio/just_do_it.mp3";
+
         this.audio.source = {
           type: 'audio',
           title: 'just_do_it_audio',
