@@ -26,7 +26,7 @@
             <a class="nav-link" href="#" @click="about_modal = !about_modal">About</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="https://hcslab.cuhk.edu.cn/">Contact</a>
+            <a class="nav-link" target="_blank" href="https://hcslab.cuhk.edu.cn/">Lab Hompage</a>
           </li>
         </ul>
       </div>
@@ -43,9 +43,16 @@
         Thank you for your participance, your test result has been successfuly uploaded. Please copy the
         <strong>Session ID</strong> before enter the questionnaire. <strong>Click the number below</strong> to copy your ID:
       </p>
-      <h2 class="text-center text-large text-success" ref="copy" @click="CopyID()">{{this.session_id}}</h2>
+      <h2 class="text-center text-large text-success" ref="copy" @click="CopyID()">{{this.session_id}}
+        <svg v-show="iscopy" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:7px">
+          <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+        </svg>
+      </h2>
+
+      
+
       <p>If you have the ID on your clipboard, here's the link to the questionnaire for this test:
-        <a href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u"
+        <a target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u"
         >Questionnaire</a>
       </p>
     </b-modal>
@@ -57,18 +64,20 @@
       size="lg"
       title="About This Experiment"
     >
+      <p><strong class="text-danger">Notice: This test requires a good network environment to load resources smoothly. We recommend that you connect to Wi-Fi before starting the test.</strong></p>
+    
       <p>Audiovisual asynchrony is common during the stream live. It causes by unstable network or transmission delay during hardware wireless communication. In this experiment, we want to know to what extend the asynchrony affects experience of audiovisual as well as its perception sensitivity.</p>
 
       <p>
         A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of
-        <strong>0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjusting audio track to be synchronous with visual track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
+        <strong class="text-info">0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjusting audio track to be synchronous with visual track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
       </p>
 
       <p>
         When you feel the clip video and soundtrack are synchronous, you can click
-        <a class="text-success">“Done!”</a> button. The log of your operations will be submitted. Of course, you can click
-        <a class="text-danger">“Give Up”</a> button if the adjust for synchronous annoying you.
-        <strong>Plase stay in the screen before submit your result.</strong>
+        <strong class="text-success">“Done!”</strong> button. The log of your operations will be submitted. Of course, you can click
+        <strong class="text-danger">“Give Up”</strong> button if the adjust for synchronous annoying you.
+        <strong class="text-info">Plase stay in the screen before submit your result.</strong>
       </p>
 
       <p>We’d like you fill a questionnaire after experiment, all your personal information and experiments logs are only used for academia. Codes for the platform will be open source on GitHub.</p>
@@ -99,17 +108,17 @@
     <div class="container">
       <div class="container" align="center">
         <p>
-          Try to adjust the soundtrack to fit the video by clicking the buttons below. If you find it too difficult to synchronized the video and the soundtrack, feel free to click the give up button blow. If you are ready, click
+          Try to  <strong class="text-info">adjust the soundtrack to fit the video</strong> by clicking the buttons below. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you find it too difficult to synchronized the video and the soundtrack, feel free to click the <strong class="text-danger">give up</strong> button blow. If you are ready, click
           <button
             type="button"
-            class="btn btn btn-primary"
+            class="btn btn-sm btn-info"
             @click="startTest()"
-          >start</button> button here to play the video and audio. If you would like to restart the test, re-click the start button.
+          >start</button> button here to play the video and audio. To <strong class="text-info">restart the test, re-click the start button</strong>.
         </p>
         <hr />
 
         <div style="width:55%">
-          <label for="range">Adjust Step: {{ adjust_amount }} Seconds</label>
+          <label for="range">Adjust Step: <strong class="text-info">{{ adjust_amount }}</strong> Seconds</label>
           <b-form-input
             id="range"
             v-model="adjust_amount"
@@ -124,14 +133,14 @@
           <div style="width:100%;align:center">
             <button
               type="button"
-              class="btn btn-outline-primary"
+              class="btn btn-outline-primary btn-lg"
               style="margin-right:5px"
               @click="RewindTime()"
             >{{ adjust_amount }} Slower</button>
 
             <button
               type="button"
-              class="btn btn-outline-primary"
+              class="btn btn-outline-primary btn-lg"
               style="margin-left:5px"
               @click="ForwardTime()"
             >{{ adjust_amount }} Faster</button>
@@ -154,16 +163,16 @@
       </div>
       <p class="text-muted text-center" style="margin-top:100px">
         Design and Develop by Human-Cloud System Laboratory. All Right Reserved © 2020 ｜
-        <a
+        <a target="_blank"
           href="https://hcslab.cuhk.edu.cn"
         >hcs.sse.cuhk.edu.cn</a> |
-        <a href="https://github.com/HCSLab">Source Code</a>
+        <a target="_blank" href="https://github.com/HCSLab">Source Code</a>
       </p>
       <p class="text-muted text-center">
         Powered by
-        <a href="https://vuejs.org/">Vue.js</a>,
-        <a href="https://getbootstrap.com/">Bootstrap</a>,
-        <a href="https://github.com/sampotts/plyr">sampotts/plyr</a> & coffee ☕️
+        <a target="_blank" href="https://vuejs.org/">Vue.js</a>,
+        <a target="_blank" href="https://getbootstrap.com/">Bootstrap</a>,
+        <a target="_blank" href="https://github.com/sampotts/plyr">sampotts/plyr</a> & coffee ☕️
       </p>
     </div>
   </div>
@@ -184,6 +193,7 @@ export default {
       adjust_amount: 0.3,
       about_modal: true,
       finish_modal: false,
+      iscopy: false,
       operation_storage: [],
       session_id: null,
       //upload_result
@@ -203,7 +213,7 @@ export default {
       },
       audio_options: {
         autoplay: false,
-        controls: ["current-time"], // ['progress', 'volume']
+        controls: ["current-time"], // ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen']
       },
     };
   },
@@ -216,9 +226,13 @@ export default {
     },
   },
   created() {
+    // for dev
+    // this.base_url = "http://localhost:3000";
+    
+    // for deploy
     this.base_url = "";
+    
     this.delay = Math.random() * 3 - 1.5;
-
     // generate session_id by time
     // let current_date = new Date().valueOf();
     // this.session_id = ((Math.random() * current_date) / 1000)
@@ -253,12 +267,15 @@ export default {
       range.selectNode(copyDOM)
       window.getSelection().addRange(range)
       document.execCommand("copy");
+      
+      this.iscopy = true;
     },
     // start the test, reset the operation storage
     startTest() {
       this.video.currentTime = 5;
       this.audio.currentTime = 5 + this.delay;
 
+      this.audio.volume = 1;
       this.audio.play();
       this.video.play();
       this.operation_storage = [];
@@ -266,7 +283,8 @@ export default {
     // put forward audio time
     ForwardTime() {
       if (this.video.playing) {
-        var amount = this.adjust_amount;
+        var amount = this.adjust_amount * 1
+        // console.log(amount)
         this.audio.forward(amount);
         this.operation_storage.push([
           this.video.currentTime,
@@ -281,7 +299,7 @@ export default {
           title: "Alert",
           autoHideDelay: 2000,
           appendToast: false,
-          variant: "warning",
+          variant: "danger",
           solid: true,
         });
       }
@@ -289,7 +307,8 @@ export default {
     // roll backward audio time
     RewindTime() {
       if (this.video.playing) {
-        var amount = this.adjust_amount;
+        var amount = this.adjust_amount * 1;
+        // console.log(amount)
         this.audio.rewind(amount);
         this.operation_storage.push([
           this.video.currentTime,
@@ -304,7 +323,7 @@ export default {
           title: "Alert",
           autoHideDelay: 2000,
           appendToast: false,
-          variant: "warning",
+          variant: "danger",
           solid: true,
         });
       }
@@ -318,7 +337,7 @@ export default {
           title: "Submisstion Complete",
           autoHideDelay: 2000,
           appendToast: false,
-          variant: "warning",
+          variant: "danger",
           solid: true,
         });
       } else {
