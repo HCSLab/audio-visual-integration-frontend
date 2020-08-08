@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color:	#D3D3D3; height:1200px">
+  <div style="background-color:	#D3D3D3; height:1300px">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <a class="navbar-brand" href="#">Audio-Visual Integration Test</a>
       <button
@@ -202,6 +202,7 @@ export default {
       iscopy: false,
       operation_storage: [],
       session_id: null,
+      give_up_count: 0,
       //upload_result
       upload_result: {
         timestamp: null,
@@ -278,8 +279,12 @@ export default {
     },
     // start the test, reset the operation storage
     startTest() {
-      this.video.currentTime = 5;
-      this.audio.currentTime = 5 + this.delay;
+      this.video.once('canplay', event=>{
+        this.video.currentTime = 5;
+      });
+      this.audio.once('canplay', event=>{
+        this.audio.currentTime = 5 + this.delay;
+      })
 
       this.audio.volume = 1;
       this.audio.play();
@@ -336,19 +341,63 @@ export default {
     },
     // collect the operation storage and send to backend
     intergrationResult(result) {
-      if (this.operation_storage.length == 0) {
+      if (this.operation_storage.length == 0 && this.give_up_count>=3) {
+        // play just_do_it
+        
+        // this.video.source = this.base_url + "/video/just_do_it.mp4";
+        this.video.source = {
+            type: 'video',
+            title: 'just_do_it_video',
+            sources: [
+                {
+                    src: this.base_url + "/video/just_do_it.mp4",
+                    type: 'video/mp4',
+                    size: 720,
+                } 
+            ]
+        };
+        // this.audio.source = this.base_url + "/audio/just_do_it.mp3";
+        this.audio.source = {
+          type: 'audio',
+          title: 'just_do_it_audio',
+          sources: [
+            {
+              src: this.base_url + "/audio/just_do_it.mp3",
+              type: 'audio/mp3',
+            }
+          ],
+        };
+        this.select_name = "just_do_it"
+        console.log("JUST DO IT!")
+        this.startTest()
+
         // handle empty submisstion
         this.toastCount++;
-        this.$bvToast.toast("At least have a try please.", {
-          title: "Submisstion Complete",
+        this.$bvToast.toast("We prepared special clips for you :)", {
+          title: "Don't Give Up",
           autoHideDelay: 2000,
           appendToast: false,
           variant: "danger",
           solid: true,
         });
-      } else {
+      } 
+      else if(this.operation_storage.length == 0 && this.give_up_count <3){
+        // give up warning
+        this.give_up_count ++;
+        this.toastCount++;
+        this.$bvToast.toast("At least have one try please :(", {
+          title: "Don't Give Up",
+          autoHideDelay: 2000,
+          appendToast: false,
+          variant: "danger",
+          solid: true,
+        });
+        console.log("DONT GIVE UP!")
+      }
+      else {
         // set post json: upload_result
-        this.upload_result.timestamp, this.session_id = (new Date()).valueOf().toString();
+        this.session_id = (new Date()).valueOf().toString();
+        this.upload_result.timestamp = this.session_id, 
         this.upload_result.indicator = result ? "good" : "bad";
         this.upload_result.indicator = result ? "good" : "bad";
         this.upload_result.video_name = this.select_name;
@@ -357,6 +406,7 @@ export default {
           .map((e) => e.join(","))
           .join(";");
 
+        // console.log(this.upload_result.timestamp)
         // Development usage
         // console.log(this.upload_result);
 
