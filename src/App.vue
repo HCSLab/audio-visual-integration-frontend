@@ -2,7 +2,7 @@
   <div style="background-color:	#cccccc; height:1240px">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
        <a class="navbar-brand" href="#">
-        <img src="https://hcslab.cuhk.edu.cn/wp-content/uploads/2020/05/hcs-logo.png" width="30" height="30" alt="" loading="lazy">
+        <img src="./assets/av-test.png" width="35" height="35" alt="load failed" loading="lazy">
       </a>
       <a class="navbar-brand" href="#">Audio-Visual Integration Test</a>
       <button
