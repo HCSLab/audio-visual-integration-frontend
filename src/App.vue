@@ -1,6 +1,9 @@
 <template>
-  <div style="background-color:	#D3D3D3; height:1300px">
+  <div style="background-color:	#cccccc; height:1240px">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+       <a class="navbar-brand" href="#">
+        <img src="https://hcslab.cuhk.edu.cn/wp-content/uploads/2020/05/hcs-logo.png" width="30" height="30" alt="" loading="lazy">
+      </a>
       <a class="navbar-brand" href="#">Audio-Visual Integration Test</a>
       <button
         class="navbar-toggler"
@@ -14,7 +17,7 @@
         <span class="navbar-toggler-icon"></span>
       </button>
 
-      <div class="collapse navbar-collapse" id="navbarColor01">
+      <div class="collapse navbar-collapse" id="navbarColor01" v-if="!lang_is_zh">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item active">
             <a class="nav-link" href="#">
@@ -28,8 +31,36 @@
           <li class="nav-item">
             <a class="nav-link" target="_blank" href="https://hcslab.cuhk.edu.cn/">Lab Hompage</a>
           </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" @click="changeLang()">
+                简体中文
+            </a>
+          </li>
         </ul>
       </div>
+      <!--====================The Chinese Introduction====================-->
+      <div class="collapse navbar-collapse" id="navbarColor01" v-if="lang_is_zh">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">
+              测试
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" @click="about_modal = !about_modal">实验说明</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" target="_blank" href="https://hcslab.cuhk.edu.cn/">实验室主页</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" @click="changeLang()">
+                English
+            </a>
+          </li>
+        </ul>
+      </div>
+
     </nav>
     <b-modal
       v-model="finish_modal"
@@ -39,22 +70,37 @@
       size="lg"
       title="Congratulations! Your test has been uploaded."
     >
-      <p>
-        Thank you for your participance, your test result has been successfuly uploaded. Please copy the
-        <strong>Session ID</strong> before enter the questionnaire. <strong>Click the number below</strong> to copy your ID:
-      </p>
-      <h2 class="text-center text-large text-success" ref="copy" @click="CopyID()">{{this.session_id}}
-        <svg v-show="iscopy" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:7px">
-          <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
-        </svg>
-      </h2>
-
-      
-
-      <p>If you have the ID on your clipboard, here's the link to the questionnaire for this test:
-        <a target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u"
-        >Questionnaire</a>
-      </p>
+      <div v-if="!lang_is_zh">
+        <p>
+          Thank you for your participance, your test result has been successfuly uploaded. Please copy the
+          <strong>Session ID</strong> before enter the questionnaire. <strong>Click the number below</strong> to copy your ID:
+        </p>
+        <h2 class="text-center text-large text-success" ref="copy" @click="copyID()">{{this.session_id}}
+          <svg v-show="iscopy" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:7px">
+            <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+          </svg>
+        </h2>
+        <p>If you have the ID on your clipboard, here's the link to the questionnaire for this test:
+          <a target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u"
+          >Questionnaire</a>
+        </p>
+      </div>
+      <!--====================The Chinese Introduction====================-->
+      <div v-if="lang_is_zh">
+        <p>
+          感谢您的参与，本次实验的结果已经上传。请在前往问卷之前，<strong>点击下面的数字以复制
+          测试编号</strong>:
+        </p>
+        <h2 class="text-center text-large text-success" ref="copy" @click="copyID()">{{this.session_id}}
+          <svg v-show="iscopy" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:7px">
+            <path fill-rule="evenodd" d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+          </svg>
+        </h2>
+        <p>如果您已复制测试编号，您可以点击右侧链接以前往问卷：
+          <a target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u"
+          >调查问卷</a>
+        </p>
+      </div>
     </b-modal>
 
     <b-modal
@@ -64,37 +110,57 @@
       size="lg"
       title="About This Experiment"
     >
-      <p><strong class="text-danger">Notice: This test requires a good network environment to load resources smoothly. We recommend that you connect to Wi-Fi before starting the test.</strong></p>
-    
-      <p>Audiovisual asynchrony is common during the stream live. It causes by unstable network or transmission delay during hardware wireless communication. In this experiment, we want to know to what extend the asynchrony affects experience of audiovisual as well as its perception sensitivity.</p>
+      <div v-if="!this.lang_is_zh">
+        <p><strong class="text-danger">Notice: This test requires a good network environment to load resources smoothly. We recommend that you connect to Wi-Fi before starting the test.</strong></p>
+      
+        <p>Audiovisual asynchrony is common during the stream live. It causes by unstable network or transmission delay during hardware wireless communication. In this experiment, we want to know to what extend the asynchrony affects experience of audiovisual as well as its perception sensitivity.</p>
 
-      <p>
-        A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of
-        <strong class="text-info">0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjusting audio track to be synchronous with visual track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
-      </p>
+        <p>
+          A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of
+          <strong class="text-info">0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjusting audio track to be synchronous with visual track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
+        </p>
 
-      <p>
-        When you feel the clip video and soundtrack are synchronous, you can click
-        <strong class="text-success">“Done!”</strong> button. The log of your operations will be submitted. Of course, you can click
-        <strong class="text-danger">“Give Up”</strong> button if the adjust for synchronous annoying you.
-        <strong class="text-info">Plase stay in the screen before submit your result.</strong>
-      </p>
+        <p>
+          When you feel the clip video and soundtrack are synchronous, you can click
+          <strong class="text-success">“Done!”</strong> button. The log of your operations will be submitted. Of course, you can click
+          <strong class="text-danger">“Give Up”</strong> button if the adjust for synchronous annoying you.
+          <strong class="text-info">Plase stay in the screen before submit your result.</strong>
+        </p>
 
-      <p>We’d like you fill a questionnaire after experiment, all your personal information and experiments logs are only used for academia. Codes for the platform will be open source on GitHub.</p>
-      <p>Thanks for your participance!</p>
-      <p class="text-right">HCS Laboratory, CUHK(SZ)</p>
-      <p class="text-right">July 2020</p>
+        <p>We’d like you fill a questionnaire after experiment, all your personal information and experiments logs are only used for academia. Codes for the platform will be open source on GitHub.</p>
+        <p>Thanks for your participance!</p>
+        <p class="text-right">HCS Laboratory, CUHK(SZ)</p>
+        <p class="text-right">August 2020</p>
+      </div>
+      <!--====================The Chinese Introduction====================-->
+      <div v-if="this.lang_is_zh">
+        <p><strong class="text-danger">注意：本测试需要良好的网络环境以顺利加载资源。我们推荐您在Wi-Fi环境下使用</strong></p>
+      
+        <p>音画不同步现象在流媒体中很常见，它是由硬件无线通信过程中不稳定的网络或传输延迟引起的。这个实验的目的是音画不同步现象的感知敏感性，以及在多大程度上影响了视听体验。</p>
+
+        <p>
+          一段内容中性，适合所有年龄段的随机视频片段将显示在页面上。视频和声音之间将会存在
+          <strong class="text-info">-1.5 至 1.5秒的不同步</strong>。您的任务是通过点击按钮调整音频轨道，使之与视频轨道同步。您可以通过滑块更改每次点击产生时间间隔，调整范围为0.1 至 0.9秒。我们禁止了暂停功能，以模拟在YouTube或Twitch上的流媒体观看体验。
+        </p>
+
+        <p>
+          当你认为视频和声音同步时，你可以点击
+          <strong class="text-success">“Done!”</strong>按钮，你的操作记录将被上传。当然，如果你竭尽全力也无法对齐视频和声音时，可以点击
+          <strong class="text-danger">“Give Up”</strong> 按钮。
+          <strong class="text-info">在提交前请您保持在本网页画面。</strong>
+        </p>
+
+        <p>提交结果后，我们希望邀请您填写一份问卷，您所有的个人信息和实验日志仅用于学术研究。本平台的代码将在GitHub上开源。</p>
+        <p>感谢您的参与和贡献！</p>
+        <p class="text-right">香港中文大学（深圳） - 人云系统实验室</p>
+        <p class="text-right">2020年8月</p>
+      </div>
     </b-modal>
 
     <div style="background-color:#000000;" class="container-fluid">
-      
-      <div class="alert alert-dismissible alert-light">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <h6 style="padding-top:3px"><strong>Heads up!</strong> Now it's playing <a href="#" class="alert-link text-info">{{this.select_name}}</a>, please keep this in mind.</h6>
-      </div>
 
-      <div class="container" style="pointer-events: none">
-        <vue-plyr ref="video" :options="video_options">
+      <div class="container" style="pointer-events: none;">
+        <vue-plyr ref="video" :options="video_options" >
           <video playsinline poster v-bind:src="this.video_url" type="video/mp4"></video>
         </vue-plyr>
       </div>
@@ -113,19 +179,19 @@
     <hr />
     <div class="container">
       <div class="container" align="center">
-        <p v-show="!guide_switch">
-          Try to  <strong class="text-info">adjust the soundtrack to fit the video</strong> by clicking the buttons below. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you find it too difficult to synchronized the video and the soundtrack, feel free to click the <strong class="text-danger">give up</strong> button blow. If you are ready, click
-          <button
-            type="button"
-            class="btn btn-sm btn-info"
-            @click="startTest()"
-          >start</button> button here to play the video and audio. To <strong class="text-info">restart the test, re-click the start button</strong>.
-        </p>
-        <p v-show="guide_switch"><strong class="text-danger">There's no way back. You have entered the "Just Do It" mode, please finish finish the test with "Just Do It" clip or Refresh the window to start a new session. </strong></p>
-        <hr />
+        
+          <div class="text-center">
+            <button
+              type="button"
+              class="btn btn-lg btn-info"
+              :class="{'btn-warning':start_btn=='Restart'}"
+              @click="startTest()"
+            >{{start_btn}}: {{this.select_name}}</button>
+          </div>
 
-        <div style="width:55%">
-          <label for="range">Adjust Step: <strong class="text-info">{{ adjust_amount }}</strong> Seconds</label>
+        <div style="width:55%; padding-top:8px" >
+          <label for="range" v-if="!lang_is_zh">Adjust Step: <strong class="text-info" style="font-size:15px">{{ adjust_amount }}</strong> Seconds</label>
+          <label for="range" v-if="lang_is_zh">调整间距： <strong class="text-info" style="font-size:15px">{{ adjust_amount }}</strong> 秒</label>
           <b-form-input
             id="range"
             v-model="adjust_amount"
@@ -133,6 +199,7 @@
             min="0.1"
             max="0.9"
             step="0.1"
+            class="background-color:red"
           ></b-form-input>
         </div>
 
@@ -141,16 +208,25 @@
             <button
               type="button"
               class="btn btn-outline-primary btn-lg"
-              style="margin-right:5px"
+              style="margin-right:5px; font-size:15px"
               @click="RewindTime()"
-            >{{ adjust_amount }} Slower</button>
+            >
+              <svg style="font-size: 23px; margin-bottom:4px" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-skip-backward" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M.5 3.5A.5.5 0 0 1 1 4v3.248l6.267-3.636c.52-.302 1.233.043 1.233.696v2.94l6.267-3.636c.52-.302 1.233.043 1.233.696v7.384c0 .653-.713.998-1.233.696L8.5 8.752v2.94c0 .653-.713.998-1.233.696L1 8.752V12a.5.5 0 0 1-1 0V4a.5.5 0 0 1 .5-.5zm7 1.133L1.696 8 7.5 11.367V4.633zm7.5 0L9.196 8 15 11.367V4.633z"/>
+              </svg>
+            {{ adjust_amount }}
+            </button>
 
             <button
               type="button"
               class="btn btn-outline-primary btn-lg"
-              style="margin-left:5px"
+              style="margin-left:5px; font-size:15px"
               @click="ForwardTime()"
-            >{{ adjust_amount }} Faster</button>
+            >{{ adjust_amount }}
+              <svg style="font-size: 23px; margin-bottom:4px" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-skip-forward" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd" d="M15.5 3.5a.5.5 0 0 1 .5.5v8a.5.5 0 0 1-1 0V8.752l-6.267 3.636c-.52.302-1.233-.043-1.233-.696v-2.94l-6.267 3.636C.713 12.69 0 12.345 0 11.692V4.308c0-.653.713-.998 1.233-.696L7.5 7.248v-2.94c0-.653.713-.998 1.233-.696L15 7.248V4a.5.5 0 0 1 .5-.5zM1 4.633v6.734L6.804 8 1 4.633zm7.5 0v6.734L14.304 8 8.5 4.633z"/>
+              </svg>
+            </button>
           </div>
         </div>
 
@@ -161,23 +237,39 @@
           v-bind:disabled="duplicate_submission"
           style="margin-right:10px"
           @click="intergrationResult(true)"
-        >Done! It's synchronized</button>
+        >Done! It's Synchronized</button>
         <button
           type="button"
           class="btn btn-danger"
           v-bind:disabled="duplicate_submission"
           style="margin-left:10px"
           @click="intergrationResult(false)"
-        >I give up</button>
+        >I Give Up</button>
       </div>
-      <p class="text-muted text-center" style="margin-top:100px">
+    
+      <hr/>
+      <div v-show="!guide_switch">
+          <p v-if="!lang_is_zh">
+            Try to  <strong class="text-info">adjust the soundtrack to fit the video</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the vedio is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
+          </p>
+          <p v-if="lang_is_zh">
+            尝试点击上面的按钮，您需要<strong class="text-info">调整声音轨道</strong>来使音画同步. 你可以通过<strong class="text-info">调整滑块来调节每次操作的间隔</strong>。当您认为声音和画面同步时，请点击<strong class="text-success">Done!</strong>按钮；当您认为无法使声音和画面同步时，请点击<strong class="text-danger">I Give Up</strong>按钮。
+          </p>
+      </div>
+
+      <div v-show="guide_switch">
+          <strong class="text-danger">There's no way back. You have entered the "Just Do It" mode, please finish finish the test with "Just Do It" clip or Refresh the window to start a new session. </strong>
+      </div>
+
+      <!--===================Footer Area===================-->
+      <p class="text-primary text-center" style="margin-top:100px">
         Design and Develop by Human-Cloud System Laboratory. All Right Reserved © 2020 ｜
         <a target="_blank"
           href="https://hcslab.cuhk.edu.cn"
         >hcs.sse.cuhk.edu.cn</a> |
         <a target="_blank" href="https://github.com/HCSLab">Source Code</a>
       </p>
-      <p class="text-muted text-center">
+      <p class="text-primary text-center">
         Powered by
         <a target="_blank" href="https://vuejs.org/">Vue.js</a>,
         <a target="_blank" href="https://getbootstrap.com/">Bootstrap</a>,
@@ -194,6 +286,8 @@ export default {
   components: {},
   data() {
     return {
+      lang_is_zh: false,
+      start_btn: 'Start',
       guide_switch: false,
       modal_property: true,
       video_list: null,
@@ -240,7 +334,6 @@ export default {
   created() {
     // for dev
     // this.base_url = "http://localhost:3000";
-    
     // for deploy
     this.base_url = "";
     
@@ -270,9 +363,14 @@ export default {
   },
   mounted() {
     // for development
+    // this.lang_is_zh = navigator.language == 'zh-CN'
   },
   methods: {
-    CopyID(){
+    changeLang(){
+      this.lang_is_zh = !this.lang_is_zh
+      // console.log(this.lang_is_zh)
+    },
+    copyID(){
       window.getSelection().removeAllRanges()
       const copyDOM = this.$refs.copy
       const range = document.createRange()
@@ -300,6 +398,7 @@ export default {
       this.audio.volume = 1;
       this.audio.play();
       this.video.play();
+      this.start_btn = 'Restart'
       this.operation_storage = [];
     },
     // put forward audio time
