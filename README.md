@@ -1,5 +1,11 @@
 # audio-visual-integration-frontend
 
+This is a frontend project written in Vue.js with the help of Plyr, Bootstrap/Bootswatch and etc. for a audio-visual integration test.
+
+In deply env: base_url should be set to ''//
+
+In dev env: base_url should be your backend's host address.
+
 ## Project setup
 ```
 npm install
