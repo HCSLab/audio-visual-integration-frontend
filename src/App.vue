@@ -69,6 +69,7 @@
       header-bg-variant="success"
       size="lg"
       title="Congratulations! Your test has been uploaded."
+      hide-footer
     >
       <div v-if="!lang_is_zh">
         <p>
@@ -109,6 +110,7 @@
       :no-close-on-esc="modal_property"
       size="lg"
       title="About This Experiment"
+      hide-footer
     >
       <div v-if="!this.lang_is_zh">
         <p><strong class="text-danger">Notice: This test requires a good network environment to load resources smoothly. We recommend that you connect to Wi-Fi before starting the test.</strong></p>
@@ -263,11 +265,7 @@
 
       <!--===================Footer Area===================-->
       <p class="text-primary text-center" style="margin-top:100px">
-        Design and Develop by Human-Cloud System Laboratory. All Right Reserved © 2020 ｜
-        <a target="_blank"
-          href="https://hcslab.cuhk.edu.cn"
-        >hcs.sse.cuhk.edu.cn</a> |
-        <a target="_blank" href="https://github.com/HCSLab">Source Code</a>
+        Design and Develop by <a target="_blank" href="https://hcslab.cuhk.edu.cn">Human-Cloud System Laboratory</a>. All Right Reserved © 2020 ｜ <a target="_blank" href="https://github.com/HCSLab">Source Code</a>
       </p>
       <p class="text-primary text-center">
         Powered by
