@@ -252,7 +252,7 @@
       <hr/>
       <div v-show="!guide_switch">
           <p v-if="!lang_is_zh">
-            Try to  <strong class="text-info">adjust the soundtrack to fit the video</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the vedio is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
+            Try to  <strong class="text-info">adjust the soundtrack to fit the video</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the video is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
           </p>
           <p v-if="lang_is_zh">
             尝试点击上面的按钮，您需要<strong class="text-info">调整声音轨道</strong>来使音画同步. 你可以通过<strong class="text-info">调整滑块来调节每次操作的间隔</strong>。当您认为声音和画面同步时，请点击<strong class="text-success">Done!</strong>按钮；当您认为无法使声音和画面同步时，请点击<strong class="text-danger">I Give Up</strong>按钮。
