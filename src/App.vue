@@ -74,7 +74,7 @@
       <div v-if="!lang_is_zh">
         <p>
           Thank you for your participance, your test result has been successfuly uploaded. Please copy the
-          <strong>Session ID</strong> before enter the questionnaire. <strong>Click the number below</strong> to copy your ID:
+          <strong class="text-info">Session ID</strong> before enter the questionnaire. <strong class="text-info">Click the number below</strong> to copy your ID:
         </p>
         <h2 class="text-center text-large text-success" ref="copy" @click="copyID()">{{this.session_id}}
           <svg v-show="iscopy" width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-check-circle-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg" style="margin-bottom:7px">
@@ -82,14 +82,14 @@
           </svg>
         </h2>
         <p>If you have the ID on your clipboard, here's the link to the questionnaire for this test:
-          <a target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u"
-          >Questionnaire</a>
+          <h2 class="text-center"><a target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u&lang=EN"
+          >Questionnaire</a></h2>
         </p>
       </div>
       <!--====================The Chinese Introduction====================-->
       <div v-if="lang_is_zh">
         <p>
-          感谢您的参与，本次实验的结果已经上传。请在前往问卷之前，<strong>点击下面的数字以复制
+          感谢您的参与，本次实验的结果已经上传。请在前往问卷之前，<strong class="text-info">点击下面的数字以复制
           测试编号</strong>:
         </p>
         <h2 class="text-center text-large text-success" ref="copy" @click="copyID()">{{this.session_id}}
@@ -98,8 +98,8 @@
           </svg>
         </h2>
         <p>如果您已复制测试编号，您可以点击右侧链接以前往问卷：
-          <a target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u"
-          >调查问卷</a>
+          <h2 class="text-center"><a target="_blank" href="https://forms.office.com/Pages/ResponsePage.aspx?id=eouJ5YecS0qyKi3z81XgHnxB1gMPgXtOvnxFSLgMzGpUMDlBUlQ0RFhQNVRHSjlGNkpUTkRYRkUyNS4u&lang=zh-CN"
+          >调查问卷</a></h2>
         </p>
       </div>
     </b-modal>
@@ -327,7 +327,7 @@ export default {
     },
     audio() {
       return this.$refs.audio.player;
-    },
+    }
   },
   created() {
     // for dev
@@ -361,7 +361,7 @@ export default {
   },
   mounted() {
     // for development
-    // this.lang_is_zh = navigator.language == 'zh-CN'
+    this.lang_is_zh = navigator.language == 'zh-CN'
   },
   methods: {
     changeLang(){
