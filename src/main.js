@@ -6,9 +6,10 @@ import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import VuePlyr from 'vue-plyr'
 import axios from 'axios'
 import VueAxios from 'vue-axios'
+import device from "current-device";
 
 
-Vue.use(BootstrapVue, IconsPlugin, axios, VueAxios)
+Vue.use(BootstrapVue, IconsPlugin, axios, VueAxios, device)
 
 Vue.use(VuePlyr, {
   plyr: {
@@ -20,6 +21,7 @@ Vue.use(VuePlyr, {
 
 Vue.config.productionTip = false
 Vue.prototype.$http = axios
+
 
 new Vue({
   render: h => h(App),

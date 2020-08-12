@@ -114,7 +114,8 @@
     >
       <div v-if="!this.lang_is_zh">
         <p><strong class="text-danger">Notice: This test requires a good network environment to load resources smoothly. We recommend that you connect to Wi-Fi before starting the test.</strong></p>
-      
+        <p v-if="!this.is_desktop"><strong class="text-danger">* We notice that you're using mobile device; Please open this page on PC for better experience. *</strong></p>
+
         <p>Audiovisual asynchrony is common during the stream live. It causes by unstable network or transmission delay during hardware wireless communication. In this experiment, we want to know to what extend the asynchrony affects experience of audiovisual as well as its perception sensitivity.</p>
 
         <p>
@@ -136,7 +137,8 @@
       </div>
       <!--====================The Chinese Introduction====================-->
       <div v-if="this.lang_is_zh">
-        <p><strong class="text-danger">注意：本测试需要良好的网络环境以顺利加载资源。我们推荐您在Wi-Fi环境下使用</strong></p>
+        <p><strong class="text-danger">注意：本测试需要良好的网络环境以顺利加载资源，我们推荐您在Wi-Fi环境下使用。</strong></p>
+        <p v-if="!this.is_desktop"><strong class="text-danger">* 我们注意到您正在使用移动端，请尽可能使用PC端以获得更好的体验。 *</strong></p>
       
         <p>音画不同步现象在流媒体中很常见，它是由硬件无线通信过程中不稳定的网络或传输延迟引起的。这个实验的目的是音画不同步现象的感知敏感性，以及在多大程度上影响了视听体验。</p>
 
@@ -284,7 +286,8 @@ export default {
   components: {},
   data() {
     return {
-      lang_is_zh: false,
+      is_desktop: null,
+      lang_is_zh: null,
       start_btn: 'Start',
       guide_switch: false,
       modal_property: true,
@@ -307,6 +310,10 @@ export default {
         rand: null,
         indicator: null,
         actions: null,
+        location: null,
+        device: null,
+        os: null,
+        language: null
       },
       // player setting
       video_options: {
@@ -360,8 +367,22 @@ export default {
       .catch((error) => console.log(error));
   },
   mounted() {
-    // for development
-    this.lang_is_zh = navigator.language == 'zh-CN'
+    // ip information
+    axios.get('http://ip-api.com/json/')
+      .then((response) => {
+        this.upload_result.location = response.data.country
+      })
+      .catch((error) => console.log(error))
+    // lang check
+    this.lang_is_zh = navigator.language == 'zh-CN';    
+    this.upload_result.language = navigator.language;
+    // device check
+    this.upload_result.os = device['os'];
+    this.upload_result.device = device['type'];
+    this.is_desktop = device.desktop()
+
+    //for dev
+    // console.log(this.upload_result)
   },
   methods: {
     changeLang(){
@@ -388,15 +409,15 @@ export default {
           this.audio.currentTime = 5 + this.delay;
         })
       }else{
-          this.video.currentTime = 5;
-          this.audio.currentTime = 5 + this.delay;
+        this.video.currentTime = 5;
+        this.audio.currentTime = 5 + this.delay;
       }
       
 
       this.audio.volume = 1;
       this.audio.play();
       this.video.play();
-      this.start_btn = 'Restart'
+      this.start_btn = 'Restart';
       this.operation_storage = [];
     },
     // put forward audio time

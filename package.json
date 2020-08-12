@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "current-device": "^0.10.1",
     "video.js": "^7.8.4",
     "vue": "^2.6.11",
     "vue-axios": "^2.1.5"
