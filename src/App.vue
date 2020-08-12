@@ -165,7 +165,7 @@
 
       <div class="container" style="pointer-events: none;">
         <vue-plyr ref="video" :options="video_options" >
-          <video playsinline poster v-bind:src="this.video_url" type="video/mp4"></video>
+          <video preload="auto" playsinline poster v-bind:src="this.video_url" type="video/mp4"></video>
         </vue-plyr>
       </div>
     </div>
@@ -177,7 +177,7 @@
     </vue-plyr>-->
 
     <vue-plyr ref="audio" :options="audio_options" style="pointer-events: none">
-      <audio v-bind:src="audio_url" controls></audio>
+      <audio preload="auto" v-bind:src="audio_url" controls></audio>
     </vue-plyr>
 
     <hr />
@@ -250,7 +250,11 @@
           @click="intergrationResult(false)"
         >I Give Up</button>
       </div>
-    
+      
+      <!-- develop usage -->
+      <!-- <button @click="test()">here</button> -->
+      <!-- <h5>{{video_load_progress}}</h5> -->
+
       <hr/>
       <div v-show="!guide_switch">
           <p v-if="!lang_is_zh">
@@ -321,6 +325,7 @@ export default {
         controls: [], // ['play-large', 'play', 'progress', 'current-time', 'mute', 'volume', 'captions', 'settings', 'pip', 'airplay', 'fullscreen']
         volume: 0,
         ratio: "16:9",
+        // hideControls: false
       },
       audio_options: {
         autoplay: false,
@@ -339,6 +344,7 @@ export default {
   created() {
     // for dev
     // this.base_url = "http://localhost:3000";
+    // this.base_url = "http://47.242.3.232:3000";
     // for deploy
     this.base_url = "";
     
@@ -385,6 +391,10 @@ export default {
     // console.log(this.upload_result)
   },
   methods: {
+    // test(){
+    //   console.log(this.video.buffered, this.video.seeking, this.video.duration)
+    //   console.log(this.audio.buffered, this.audio.seeking, this.audio.duration)
+    // },
     changeLang(){
       this.lang_is_zh = !this.lang_is_zh
       // console.log(this.lang_is_zh)
@@ -419,6 +429,7 @@ export default {
       this.video.play();
       this.start_btn = 'Restart';
       this.operation_storage = [];
+
     },
     // put forward audio time
     ForwardTime() {
