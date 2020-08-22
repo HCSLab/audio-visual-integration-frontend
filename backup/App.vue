@@ -120,7 +120,7 @@
 
         <p>
           A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of
-          <strong class="text-info">0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjust video track to be synchronous with audio track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
+          <strong class="text-info">0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjusting audio track to be synchronous with visual track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
         </p>
 
         <p>
@@ -144,7 +144,7 @@
 
         <p>
           一段内容中性，适合所有年龄段的随机视频片段将显示在页面上。视频和声音之间将会存在
-          <strong class="text-info">-1.5 至 1.5秒的不同步</strong>。您的任务是通过点击按钮调整视屏轨道，使之与音频轨道同步。您可以通过滑块更改每次点击产生时间间隔，调整范围为0.1 至 0.9秒。我们禁止了暂停功能，以模拟在YouTube或Twitch上的流媒体观看体验。
+          <strong class="text-info">-1.5 至 1.5秒的不同步</strong>。您的任务是通过点击按钮调整音频轨道，使之与视频轨道同步。您可以通过滑块更改每次点击产生时间间隔，调整范围为0.1 至 0.9秒。我们禁止了暂停功能，以模拟在YouTube或Twitch上的流媒体观看体验。
         </p>
 
         <p>
@@ -258,10 +258,10 @@
       <hr/>
       <div v-show="!guide_switch">
           <p v-if="!lang_is_zh">
-            Try to  <strong class="text-info">adjust the video track to fit the audio track</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the video is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
+            Try to  <strong class="text-info">adjust the soundtrack to fit the video</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the video is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
           </p>
           <p v-if="lang_is_zh">
-            尝试点击上面的按钮，您需要<strong class="text-info">调整视屏轨道</strong>来使音画同步. 你可以通过<strong class="text-info">调整滑块来调节每次操作的间隔</strong>。当您认为声音和画面同步时，请点击<strong class="text-success">Done!</strong>按钮；当您认为无法使声音和画面同步时，请点击<strong class="text-danger">I Give Up</strong>按钮。
+            尝试点击上面的按钮，您需要<strong class="text-info">调整声音轨道</strong>来使音画同步. 你可以通过<strong class="text-info">调整滑块来调节每次操作的间隔</strong>。当您认为声音和画面同步时，请点击<strong class="text-success">Done!</strong>按钮；当您认为无法使声音和画面同步时，请点击<strong class="text-danger">I Give Up</strong>按钮。
           </p>
       </div>
 
@@ -437,7 +437,7 @@ export default {
       if (this.video.playing) {
         var amount = this.adjust_amount * 1
         // console.log(amount)
-        this.video.forward(amount);
+        this.audio.forward(amount);
         this.operation_storage.push([
           this.video.currentTime,
           this.audio.currentTime,
@@ -461,7 +461,7 @@ export default {
       if (this.video.playing) {
         var amount = this.adjust_amount * 1;
         // console.log(amount)
-        this.video.rewind(amount);
+        this.audio.rewind(amount);
         this.operation_storage.push([
           this.video.currentTime,
           this.audio.currentTime,
