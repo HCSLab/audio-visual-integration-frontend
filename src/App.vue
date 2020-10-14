@@ -120,7 +120,7 @@
 
         <p>
           A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of
-          <strong class="text-info">0 to 1.5 seconds, either video ahead or audio ahead</strong>. Your task is adjust video track to be synchronous with audio track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
+          <strong class="text-info">0 to 10 seconds, either video ahead or audio ahead</strong>. Your task is adjust video track to be synchronous with audio track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
         </p>
 
         <p>
@@ -143,8 +143,8 @@
         <p>音画不同步现象在流媒体中很常见，它是由硬件无线通信过程中不稳定的网络或传输延迟引起的。这个实验的目的是音画不同步现象的感知敏感性，以及在多大程度上影响了视听体验。</p>
 
         <p>
-          一段内容中性，适合所有年龄段的随机视频片段将显示在页面上。视频和声音之间将会存在
-          <strong class="text-info">-1.5 至 1.5秒的不同步</strong>。您的任务是通过点击按钮调整视屏轨道，使之与音频轨道同步。您可以通过滑块更改每次点击产生时间间隔，调整范围为0.1 至 0.9秒。我们禁止了暂停功能，以模拟在YouTube或Twitch上的流媒体观看体验。
+          一段内容中性，适合所有年龄段的随机视频片段将显示在页面上。声音将相对于视频存在
+          <strong class="text-info">-10 至 10秒的不同步</strong>。您的任务是通过点击按钮调整视屏轨道，使之与音频轨道同步。您可以通过滑块更改每次点击产生时间间隔，调整范围为0.1 至 0.9秒。我们禁止了暂停功能，以模拟在YouTube或Twitch上的流媒体观看体验。
         </p>
 
         <p>
@@ -168,6 +168,8 @@
           <video preload="auto" playsinline poster v-bind:src="this.video_url" type="video/mp4"></video>
         </vue-plyr>
       </div>
+
+      
     </div>
 
     <!-- <vue-plyr class="container" ref="audio" :options="audio_options">
@@ -176,21 +178,69 @@
       </audio>
     </vue-plyr>-->
 
-    <vue-plyr ref="audio" :options="audio_options" style="pointer-events: none">
+    <vue-plyr v-show="false" ref="audio" :options="audio_options" style="pointer-events: none">
       <audio preload="auto" v-bind:src="audio_url" controls></audio>
     </vue-plyr>
 
+    <b-progress :max="4" height="2rem">
+      <b-progress-bar :value="stage_number" striped animated variant="success">
+          <span class="text"><strong>Task Progress: {{stage_number}}/4</strong></span>
+      </b-progress-bar>
+    </b-progress>
+
     <hr />
-    <div class="container">
-      <div class="container" align="center">
+    <div class="container" >
+
+      <div class="container" align="center" v-show="show_judge_panel">
+        <div class="text-center">
+            <button
+              type="button"
+              class="btn"
+              v-bind:class="[isplaying ? 'btn-warning' : 'btn-info']"
+              @click="startTest()"
+            >{{start_btn_state}}</button>
+        </div>
+        <br />
+        <div>
+          <b-form-group>
+            <span>Are the audio and the video synchronized?</span>
+            <b-form-radio v-model="upload_result.stage_1_1" value="yes">Yes</b-form-radio>
+            <b-form-radio v-model="upload_result.stage_1_1" value="no">No</b-form-radio>
+          </b-form-group>
+
+          <b-form-group>
+            <span>Which of the track is ahead?</span>
+            <b-form-radio v-model="upload_result.stage_1_2" value="video">Video</b-form-radio>
+            <b-form-radio v-model="upload_result.stage_1_2" value="audio">Audio</b-form-radio>
+            <b-form-radio v-model="upload_result.stage_1_2" value="same">Synchronized</b-form-radio>
+          </b-form-group>
+        </div>
+        <br />
+        <div class="container" align="center">
+        <button class="btn btn-info" @click="next_stage()">Next Stage</button>
+        </div>
+
+        <hr/>
+        <div>
+            <p v-if="!lang_is_zh">
+              <strong class="text-info">Task 1: </strong>Try to <strong class="text-info">adjust the audio track to fit the video track</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the video is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
+            </p>
+            <p v-if="lang_is_zh">
+              <strong class="text-info">测试 1 </strong>尝试点击上面的按钮，您需要<strong class="text-info">调整音频轨道</strong>来使音画同步. 你可以通过<strong class="text-info">调整滑块来调节每次操作的间隔</strong>。当您认为声音和画面同步时，请点击<strong class="text-success">Done!</strong>按钮；当您认为无法使声音和画面同步时，请点击<strong class="text-danger">I Give Up</strong>按钮。
+            </p>
+        </div>
+
+      </div>
+
+      <div class="container" align="center" v-show="show_adjust_panel">
         
           <div class="text-center">
             <button
               type="button"
-              class="btn btn-lg btn-info"
-              :class="{'btn-warning':start_btn=='Restart'}"
+              class="btn"
+              v-bind:class="[isplaying ? 'btn-warning' : 'btn-info']"
               @click="startTest()"
-            >{{start_btn}}: {{this.select_name}}</button>
+            >{{start_btn_state}}</button>
           </div>
 
         <div style="width:55%; padding-top:8px" >
@@ -249,36 +299,38 @@
           style="margin-left:10px"
           @click="intergrationResult(false)"
         >I Give Up</button>
+
+
+        <hr/>
+        <div>
+            <p v-if="!lang_is_zh">
+              Try to  <strong class="text-info">adjust the audio track to fit the video track</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the video is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
+            </p>
+            <p v-if="lang_is_zh">
+              尝试点击上面的按钮，您需要<strong class="text-info">调整音频轨道</strong>来使音画同步. 你可以通过<strong class="text-info">调整滑块来调节每次操作的间隔</strong>。当您认为声音和画面同步时，请点击<strong class="text-success">Done!</strong>按钮；当您认为无法使声音和画面同步时，请点击<strong class="text-danger">I Give Up</strong>按钮。
+            </p>
+        </div>
       </div>
       
       <!-- develop usage -->
-      <!-- <button @click="test()">here</button> -->
-      <!-- <h5>{{video_load_progress}}</h5> -->
-
-      <hr/>
-      <div v-show="!guide_switch">
-          <p v-if="!lang_is_zh">
-            Try to  <strong class="text-info">adjust the video track to fit the audio track</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the video is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
-          </p>
-          <p v-if="lang_is_zh">
-            尝试点击上面的按钮，您需要<strong class="text-info">调整视屏轨道</strong>来使音画同步. 你可以通过<strong class="text-info">调整滑块来调节每次操作的间隔</strong>。当您认为声音和画面同步时，请点击<strong class="text-success">Done!</strong>按钮；当您认为无法使声音和画面同步时，请点击<strong class="text-danger">I Give Up</strong>按钮。
-          </p>
-      </div>
-
-      <div v-show="guide_switch">
-          <strong class="text-danger">There's no way back. You have entered the "Just Do It" mode, please finish finish the test with "Just Do It" clip or Refresh the window to start a new session. </strong>
-      </div>
+      <!-- <div class="container" align="center">
+        <button class="btn btn-warning" @click="test()">test</button>
+      </div> -->
+      
 
       <!--===================Footer Area===================-->
-      <p class="text-primary text-center" style="margin-top:100px">
+      <br />
+      <br />
+      <br />
+        <p class="text-primary text-center" >
         Design and Develop by <a target="_blank" href="https://hcslab.cuhk.edu.cn">Human-Cloud System Laboratory</a>. All Right Reserved © 2020 ｜ <a target="_blank" href="https://github.com/HCSLab">Source Code</a>
-      </p>
-      <p class="text-primary text-center">
-        Powered by
-        <a target="_blank" href="https://vuejs.org/">Vue.js</a>,
-        <a target="_blank" href="https://getbootstrap.com/">Bootstrap</a>,
-        <a target="_blank" href="https://github.com/sampotts/plyr">sampotts/plyr</a> & coffee ☕️
-      </p>
+        </p>
+        <p class="text-primary text-center">
+          Powered by
+          <a target="_blank" href="https://vuejs.org/">Vue.js</a>,
+          <a target="_blank" href="https://getbootstrap.com/">Bootstrap</a>,
+          <a target="_blank" href="https://github.com/sampotts/plyr">sampotts/plyr</a> & coffee ☕️
+        </p>
     </div>
   </div>
 </template>
@@ -290,10 +342,11 @@ export default {
   components: {},
   data() {
     return {
+      stage_storage: [], //[stage2 indicator, stage2 action, stage3 indicator, stage3 action, stage4 indicator, stage4 action]
+      stage_number: 1,
       is_desktop: null,
       lang_is_zh: null,
-      start_btn: 'Start',
-      guide_switch: false,
+      start_btn_state: "Start",
       modal_property: true,
       video_list: null,
       select_name: null,
@@ -307,17 +360,25 @@ export default {
       session_id: null,
       give_up_count: 0,
       duplicate_submission: false,
+      isplaying: false,
+
       //upload_result
       upload_result: {
+        stage_1_1: "",
+        stage_1_2: "",
+        stage_2_indicator: null,
+        stage_2_actions: null,
+        stage_3_indicator: null,
+        stage_3_actions: null,
+        stage_4_indicator: null,
+        stage_4_actions: null,
         timestamp: null,
         video_name: null,
         rand: null,
-        indicator: null,
-        actions: null,
         location: null,
         device: null,
         os: null,
-        language: null
+        language: null,
       },
       // player setting
       video_options: {
@@ -334,22 +395,37 @@ export default {
     };
   },
   computed: {
+    show_judge_panel() {
+      if (this.stage_number == "1") {
+        return true;
+      } else {
+        return false;
+      }
+    },
+    show_adjust_panel() {
+      if (this.stage_number == "1") {
+        return false;
+      } else {
+        return true;
+      }
+    },
     video() {
       return this.$refs.video.player;
     },
     audio() {
       return this.$refs.audio.player;
-    }
+    },
   },
   created() {
+    this.isplaying = false;
     // for dev
-    // this.base_url = "http://localhost:3000";
-    this.base_url = "http://47.242.3.232:3000";
+    this.base_url = "http://localhost:3000";
+    // this.base_url = "http://47.242.3.232:3000";
 
     // for deploy
     // this.base_url = "";
-    
-    this.delay = Math.random() * 3 - 1.5;
+
+    this.delay = Math.random() * 20 - 10;
     // generate session_id by time
     // let current_date = new Date().valueOf();
     // this.session_id = ((Math.random() * current_date) / 1000)
@@ -366,7 +442,7 @@ export default {
         this.video_url = this.base_url + "/video/" + this.select_name + ".mp4";
         this.audio_url = this.base_url + "/audio/" + this.select_name + ".mp3";
 
-        // for development
+        // for dev
         // console.log(this.delay);
         // console.log(this.audio_url);
         // console.log(this.video_url);
@@ -375,69 +451,102 @@ export default {
   },
   mounted() {
     // ip information
-    axios.get('http://ip-api.com/json/')
+    axios
+      .get("http://ip-api.com/json/")
       .then((response) => {
-        this.upload_result.location = response.data.country
+        this.upload_result.location = response.data.country;
       })
-      .catch((error) => console.log(error))
+      .catch((error) => console.log(error));
     // lang check
-    this.lang_is_zh = navigator.language == 'zh-CN';    
+    this.lang_is_zh = navigator.language == "zh-CN";
     this.upload_result.language = navigator.language;
     // device check
-    this.upload_result.os = device['os'];
-    this.upload_result.device = device['type'];
-    this.is_desktop = device.desktop()
+    this.upload_result.os = device["os"];
+    this.upload_result.device = device["type"];
+    this.is_desktop = device.desktop();
+    this.upload_result.rand = this.delay;
 
     //for dev
     // console.log(this.upload_result)
   },
   methods: {
+    next_stage() {
+      if (
+        this.upload_result.stage_1_1 == "" ||
+        this.upload_result.stage_1_2 == ""
+      ) {
+        this.$bvToast.toast("Please do not submit empty", {
+          title: "Alert",
+          autoHideDelay: 2000,
+          appendToast: false,
+          variant: "danger",
+        });
+      } else {
+        if (!this.video.playing) {
+          this.$bvToast.toast("Please start the test", {
+            title: "Alert",
+            autoHideDelay: 2000,
+            appendToast: false,
+            variant: "danger",
+          });
+        } else {
+          this.video.stop();
+          this.audio.stop();
+          this.isplaying = false;
+          this.start_btn_state = "Start";
+          this.stage_number += 1;
+        }
+      }
+    },
     // test(){
-    //   console.log(this.video.buffered, this.video.seeking, this.video.duration)
-    //   console.log(this.audio.buffered, this.audio.seeking, this.audio.duration)
+    //   console.log(this.stage_storage)
+    //   console.log(this.upload_result)
     // },
-    changeLang(){
-      this.lang_is_zh = !this.lang_is_zh
+    changeLang() {
+      this.lang_is_zh = !this.lang_is_zh;
       // console.log(this.lang_is_zh)
     },
-    copyID(){
-      window.getSelection().removeAllRanges()
-      const copyDOM = this.$refs.copy
-      const range = document.createRange()
-      range.selectNode(copyDOM)
-      window.getSelection().addRange(range)
+    copyID() {
+      window.getSelection().removeAllRanges();
+      const copyDOM = this.$refs.copy;
+      const range = document.createRange();
+      range.selectNode(copyDOM);
+      window.getSelection().addRange(range);
       document.execCommand("copy");
-      
+
       this.iscopy = true;
     },
     // start the test, reset the operation storage
     startTest() {
-      if (this.give_up_count >=3){
-        this.video.once('canplay', event=>{
-          this.video.currentTime = 5;
-        });
-        this.audio.once('canplay', event=>{
-          this.audio.currentTime = 5 + this.delay;
-        })
-      }else{
-        this.video.currentTime = 5;
-        this.audio.currentTime = 5 + this.delay;
-      }
-      
+      // this.video.once('canplay', event=>{
+      //   this.video.currentTime = 5;
+      // this.audio.once('canplay', event=>{
+      //   this.audio.currentTime = 5 + this.delay;
+      // })
+
+      this.video.currentTime = 10;
+      this.audio.currentTime = 10 + this.delay;
+
+      //for dev
+      // console.log(this.delay)
 
       this.audio.volume = 1;
       this.audio.play();
       this.video.play();
-      this.start_btn = 'Restart';
+      this.start_btn_state = "Restart";
       this.operation_storage = [];
-
+      this.isplaying = true;
     },
     // put forward audio time
     ForwardTime() {
-      if (this.video.playing) {
-        var amount = this.adjust_amount * 1
+      if (this.audio.playing) {
+        var amount = this.adjust_amount * 1;
+
+        // for dev
         // console.log(amount)
-        this.video.forward(amount);
+        // console.log(this.audio.currentTime)
+
+        this.audio.forward(amount);
         this.operation_storage.push([
           this.video.currentTime,
           this.audio.currentTime,
@@ -447,21 +556,24 @@ export default {
       } else {
         // handle clicking when video is stop
         this.toastCount++;
-        this.$bvToast.toast("Press the start button first", {
+        this.$bvToast.toast("Press start the test", {
           title: "Alert",
           autoHideDelay: 2000,
           appendToast: false,
           variant: "danger",
-          solid: true,
         });
       }
     },
     // roll backward audio time
     RewindTime() {
-      if (this.video.playing) {
+      if (this.audio.playing) {
         var amount = this.adjust_amount * 1;
+
+        // for dev
         // console.log(amount)
-        this.video.rewind(amount);
+        // console.log(this.audio.currentTime)
+
+        this.audio.rewind(amount);
         this.operation_storage.push([
           this.video.currentTime,
           this.audio.currentTime,
@@ -471,116 +583,86 @@ export default {
       } else {
         // handle clicking when video is stop
         this.toastCount++;
-        this.$bvToast.toast("Press the start button first", {
+        this.$bvToast.toast("Press start the test", {
           title: "Alert",
           autoHideDelay: 2000,
           appendToast: false,
           variant: "danger",
-          solid: true,
         });
       }
     },
     // collect the operation storage and send to backend
     intergrationResult(result) {
-      if (this.operation_storage.length == 0 && this.give_up_count>=3) {
-        // change guide words
-        this.guide_switch = true;
-        // play just_do_it
-        this.video.source = {
-            type: 'video',
-            title: 'just_do_it_video',
-            sources: [
-                {
-                    src: this.base_url + "/video/just_do_it.mp4",
-                    type: 'video/mp4',
-                    size: 720,
-                } 
-            ]
-        };
-
-        this.audio.source = {
-          type: 'audio',
-          title: 'just_do_it_audio',
-          sources: [
-            {
-              src: this.base_url + "/audio/just_do_it.mp3",
-              type: 'audio/mp3',
-            }
-          ],
-        };
-        this.select_name = "just_do_it"
-        console.log("JUST DO IT!")
-        this.startTest()
-
-        // handle empty submisstion
-        this.toastCount++;
-        this.$bvToast.toast("We prepared special clips for you :)", {
-          title: "Don't Give Up",
-          autoHideDelay: 2000,
-          appendToast: false,
-          variant: "danger",
-          solid: true,
-        });
-      } 
-      else if(this.operation_storage.length == 0 && this.give_up_count <3){
+      // if(this.operation_storage.length == 0){
+      if (false) {
         // give up warning
-        this.give_up_count ++;
+        this.give_up_count++;
         this.toastCount++;
         this.$bvToast.toast("At least have one try please :(", {
           title: "Don't Give Up",
           autoHideDelay: 2000,
           appendToast: false,
           variant: "danger",
-          solid: true,
         });
-        console.log("DONT GIVE UP!")
-      }
-      else {
+      } else {
+        this.stage_storage.push(result ? "good" : "bad");
+        this.stage_storage.push(
+          this.operation_storage.map((e) => e.join(",")).join(";")
+        );
+
         // set post json: upload_result
-        this.session_id = (new Date()).valueOf().toString();
-        this.upload_result.timestamp = this.session_id, 
-        this.upload_result.indicator = result ? "good" : "bad";
-        this.upload_result.indicator = result ? "good" : "bad";
-        this.upload_result.video_name = this.select_name;
-        this.upload_result.rand = this.delay;
-        this.upload_result.actions = this.operation_storage
-          .map((e) => e.join(","))
-          .join(";");
+        if (this.stage_number == 4) {
+          this.upload_result.stage_2_indicator = this.stage_storage[0];
+          this.upload_result.stage_2_actions = this.stage_storage[1];
+          this.upload_result.stage_3_indicator = this.stage_storage[2];
+          this.upload_result.stage_3_actions = this.stage_storage[3];
+          this.upload_result.stage_4_indicator = this.stage_storage[4];
+          this.upload_result.stage_4_actions = this.stage_storage[5];
 
-        // console.log(this.upload_result.timestamp)
-        // Development usage
-        // console.log(this.upload_result);
+          this.upload_result.video_name = this.select_name;
+          this.session_id = new Date().valueOf().toString();
+          (this.upload_result.timestamp = this.session_id),
+            axios
+              .post(this.base_url + "/upload_result", this.upload_result)
+              .then((response) => {
+                this.toastCount++;
+                this.$bvToast.toast("Your records have been uploaded", {
+                  title: "Submisstion Complete",
+                  autoHideDelay: 2000,
+                  appendToast: false,
+                  variant: "success",
+                });
+                // stop video and audio
+                this.video.stop();
+                this.audio.stop();
+                this.isplaying = false;
 
-        axios
-          .post(this.base_url + "/upload_result", this.upload_result)
-          .then((response) => {
-            this.toastCount++;
-            this.$bvToast.toast("Your records have been uploaded", {
-              title: "Submisstion Complete",
-              autoHideDelay: 2000,
-              appendToast: false,
-              variant: "success",
-              solid: true,
-            });
-            // stop video and audio
-            this.video.stop();
-            this.audio.stop();
-
-            // open finish modal
-            this.finish_modal = true;
-            this.duplicate_submission = true;
-          })
-          .catch((error) => {
-            console.log(error);
-            this.toastCount++;
-            this.$bvToast.toast("Something went wrong. Please try again", {
-              title: "Error",
-              autoHideDelay: 2000,
-              appendToast: false,
-              variant: "danger",
-              solid: true,
-            });
-          });
+                // open finish modal
+                this.finish_modal = true;
+                this.duplicate_submission = true;
+              })
+              .catch((error) => {
+                console.log(error);
+                this.toastCount++;
+                this.$bvToast.toast("Something went wrong. Please try again", {
+                  title: "Error",
+                  autoHideDelay: 2000,
+                  appendToast: false,
+                  variant: "danger",
+                });
+              });
+          // for dev active
+          console.log(this.upload_result);
+        } else {
+          // enter next stage
+          this.delay = this.audio.currentTime - this.video.currentTime;
+          this.start_btn_state = "Start";
+          this.video.stop();
+          this.audio.stop();
+          this.isplaying = false;
+          this.operation_storage = [];
+          this.stage_number += 1;
+        }
       }
     },
   },
