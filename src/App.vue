@@ -1,5 +1,5 @@
 <template>
-  <div style="background-color:	#cccccc; height:1240px">
+  <div style="background-color:	#cccccc; height:1340px">
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
        <a class="navbar-brand" href="#">
         <img src="./assets/av-test.png" width="35" height="35" alt="load failed" loading="lazy">
@@ -120,20 +120,16 @@
 
         <p>
           A clip with random content will show on the page. The contents are neutral and suitable for all ages. The clip is with an asynchrony value of
-          <strong class="text-info">0 to 10 seconds, either video ahead or audio ahead</strong>. Your task is adjust video track to be synchronous with audio track. The minimal step is 0.1s and it can be changed by slider. We prohibit pause and playback function on purpose, hoping for a more flowing experience like your daily wander on YouTube/Twitch.
+          <strong class="text-info">0 to 10 seconds, either the video or the audio ahead</strong>. Your task includes <strong class='text-info'>four stages</strong>: <ul><li>1. Determine if the audio and video are synchronized;</li> <li>2-4. adjust the audio track to fit the video <strong class="text-success">for three attempts</strong>. Detailed guidance wil show in stages.</li></ul>
         </p>
 
         <p>
-          When you feel the clip video and soundtrack are synchronous, you can click
-          <strong class="text-success">“Done!”</strong> button. The log of your operations will be submitted. Of course, you can click
-          <strong class="text-danger">“Give Up”</strong> button if the adjust for synchronous annoying you.
-          <strong class="text-info">Plase stay in the screen before submit your result.</strong>
+          After finishing four stages, you will see a pop-up window showing your 13-digit <strong class="text-info">completion code</strong>. We’d like you to <strong class="text-info">copy the code, and fill a questionnaire</strong>. All your personal information and experiments logs will be only used for academia. The source code of this project available on GitHub.
         </p>
 
-        <p>We’d like you fill a questionnaire after experiment, all your personal information and experiments logs are only used for academia. Codes for the platform will be open source on GitHub.</p>
-        <p>Thanks for your participance!</p>
+        <p>Thank you for your participance!</p>
         <p class="text-right">HCS Laboratory, CUHK(SZ)</p>
-        <p class="text-right">August 2020</p>
+        <p class="text-right">Octobar 2020</p>
       </div>
       <!--====================The Chinese Introduction====================-->
       <div v-if="this.lang_is_zh">
@@ -144,20 +140,16 @@
 
         <p>
           一段内容中性，适合所有年龄段的随机视频片段将显示在页面上。声音将相对于视频存在
-          <strong class="text-info">-10 至 10秒的不同步</strong>。您的任务是通过点击按钮调整视屏轨道，使之与音频轨道同步。您可以通过滑块更改每次点击产生时间间隔，调整范围为0.1 至 0.9秒。我们禁止了暂停功能，以模拟在YouTube或Twitch上的流媒体观看体验。
+          <strong class="text-info">-10 至 10秒的不同步</strong>。您的任务包括<strong class="text-info">四个部分</strong>：<ul><li>1. 判断视频和音频的同步情况；</li><li>2. <strong class="text-success">三次</strong>尝试调整音频，使之与视频同步。</li></ul>
         </p>
 
         <p>
-          当你认为视频和声音同步时，你可以点击
-          <strong class="text-success">“Done!”</strong>按钮，你的操作记录将被上传。当然，如果你竭尽全力也无法对齐视频和声音时，可以点击
-          <strong class="text-danger">“Give Up”</strong> 按钮。
-          <strong class="text-info">在提交前请您保持在本网页画面。</strong>
+          完成四个部分后，您将看见一个包含13位<strong class="text-info">完成码</strong>的弹窗，我们希望邀请您<strong class="text-info">复制改完成码，并填写一份问卷</strong>。您所有的个人信息和实验日志仅用于学术研究。本平台的代码在GitHub上开源。
         </p>
 
-        <p>提交结果后，我们希望邀请您填写一份问卷，您所有的个人信息和实验日志仅用于学术研究。本平台的代码将在GitHub上开源。</p>
         <p>感谢您的参与和贡献！</p>
         <p class="text-right">香港中文大学（深圳） - 人云系统实验室</p>
-        <p class="text-right">2020年8月</p>
+        <p class="text-right">二〇二〇年十月</p>
       </div>
     </b-modal>
 
@@ -184,7 +176,7 @@
 
     <b-progress :max="4" height="2rem">
       <b-progress-bar :value="stage_number" striped animated variant="success">
-          <span class="text"><strong>Task Progress: {{stage_number}}/4</strong></span>
+          <span class="text"><strong>Stage Progress: {{stage_number}}/4</strong></span>
       </b-progress-bar>
     </b-progress>
 
@@ -203,16 +195,18 @@
         <br />
         <div>
           <b-form-group>
-            <span>Are the audio and the video synchronized?</span>
+            <span v-show="!lang_is_zh">Are the audio and the video synchronized?</span>
+            <span v-show="lang_is_zh">音频和视频是否同步?</span>
             <b-form-radio v-model="upload_result.stage_1_1" value="yes">Yes</b-form-radio>
             <b-form-radio v-model="upload_result.stage_1_1" value="no">No</b-form-radio>
           </b-form-group>
 
           <b-form-group>
-            <span>Which of the track is ahead?</span>
+            <span v-show="!lang_is_zh">Which of the track is ahead?</span>
+            <span v-show="lang_is_zh">在音频和视频中，哪一个在前面?</span>
             <b-form-radio v-model="upload_result.stage_1_2" value="video">Video</b-form-radio>
             <b-form-radio v-model="upload_result.stage_1_2" value="audio">Audio</b-form-radio>
-            <b-form-radio v-model="upload_result.stage_1_2" value="same">Synchronized</b-form-radio>
+            <b-form-radio v-show="upload_result.stage_1_1 == 'yes'" v-model="upload_result.stage_1_2" value="same">Synchronized</b-form-radio>
           </b-form-group>
         </div>
         <br />
@@ -223,10 +217,10 @@
         <hr/>
         <div>
             <p v-if="!lang_is_zh">
-              <strong class="text-info">Task 1: </strong>Try to <strong class="text-info">adjust the audio track to fit the video track</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the video is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
+              <strong class="text-info">Stage {{stage_number}}: </strong>Play the video. You should first judge whether the audiovisual is synchronous, then determine the their order.
             </p>
             <p v-if="lang_is_zh">
-              <strong class="text-info">测试 1 </strong>尝试点击上面的按钮，您需要<strong class="text-info">调整音频轨道</strong>来使音画同步. 你可以通过<strong class="text-info">调整滑块来调节每次操作的间隔</strong>。当您认为声音和画面同步时，请点击<strong class="text-success">Done!</strong>按钮；当您认为无法使声音和画面同步时，请点击<strong class="text-danger">I Give Up</strong>按钮。
+              <strong class="text-info">Stage {{stage_number}} </strong>您需要先辨别音画是否同步，再判断声音在前还是画面在前。
             </p>
         </div>
 
@@ -302,14 +296,45 @@
 
 
         <hr/>
-        <div>
+        <div v-if="stage_number == 2">
             <p v-if="!lang_is_zh">
-              Try to  <strong class="text-info">adjust the audio track to fit the video track</strong> by clicking the buttons above. You can <strong class="text-info">adjust the step using the SlideBar</strong>. If you think the audio and the video is sychronized, click the <strong class="text-success">Done!</strong> button; If you find it too difficult to complete the task, feel free to click the <strong class="text-danger">I Give Up</strong> button.
+              <strong class="text-info">Stage {{stage_number}}: </strong>Your task is <strong class="text-success">adjusting the audio track to fit the video</strong>. Here are the mentions:
+              <ul class="list-unstyled">
+                <li> 1. The adjust step can be changed from 0.1 to 0.9 second by the slider. The default value is 0.3 second.</li>
+                <li>2. You can forward or rewind the audio track by clicking the buttons below the slider.</li>
+                <li>3. Press the <strong class="text-warning">Restart</strong> button can clear your operation logs and refresh the stage.</li>
+                <li>4. You can submit and to the next stage by clicking the <strong class="text-info">Done</strong> button when you feel the audiovisual is synchronous; or, the <strong class="text-danger">Give Up</strong> button after trying you best but the audiovisual is still asynchronous.</li>
+              </ul>
             </p>
             <p v-if="lang_is_zh">
-              尝试点击上面的按钮，您需要<strong class="text-info">调整音频轨道</strong>来使音画同步. 你可以通过<strong class="text-info">调整滑块来调节每次操作的间隔</strong>。当您认为声音和画面同步时，请点击<strong class="text-success">Done!</strong>按钮；当您认为无法使声音和画面同步时，请点击<strong class="text-danger">I Give Up</strong>按钮。
+              <strong class="text-info">Stage {{stage_number}}: </strong>您需要<strong class="text-success">调整音轨，使之于视频同步</strong>. 以下是指引:
+              <ul>
+                <li>1. 每次调整的间距可以由滑块在0.1到0.9秒内调整，默认值是0.3秒。</li>
+                <li>2. 通过点击滑块下方的两个按钮，来使音轨快进或快退。</li>
+                <li>3. 点击 <strong class="text-warning">Restart</strong> 按钮将消除您的操作记录，并重新开始这个stage。</li>
+                <li>4. 您可以通过点击 <strong class="text-info">Done</strong> 按钮来提交您的操作并进入下一个Stage；当您竭尽全力也无法使音画同步时，点击 <strong class="text-danger">Give Up</strong> 按钮放弃，并进去下一个Stage。</li>
+              </ul>
             </p>
         </div>
+
+        <div v-if="stage_number == 3">
+            <p v-if="!lang_is_zh">
+              <strong class="text-info">Stage {{stage_number}}: </strong>It is the same as Stage 2 but you should <strong class="text-info">re-synchronize</strong> the audiovisual and submit it again. If you have already synchronized the audiovisual in Stage 1, feel free the direct press <strong class="text-success">Done</strong>.
+            </p>
+            <p v-if="lang_is_zh">
+              <strong class="text-info">Stage {{stage_number}}: </strong>同Stage 2 一样，但您需<strong class="text-info">要重新使音画同步</strong>并再次提交。若您认为经过 Stage 1 的调整音画已经同步，您也可以直接点击 <strong class="text-success">Done</strong> 按钮。
+            </p>
+        </div>
+
+        <div v-if="stage_number == 4">
+            <p v-if="!lang_is_zh">
+              <strong class="text-info">Stage {{stage_number}}: </strong>You're <strong class="text-success">almost done!</strong> What you need to do is the same as two previous stages. Notice that after your submission, there will be a pop-up window showing your<strong class="text-info"> 13-digit completion code</strong>. Please copy it as your session ID.
+            </p>
+            <p v-if="lang_is_zh">
+              <strong class="text-info">Stage {{stage_number}}: </strong><strong class="text-success">您几乎完成了！</strong> 您需要同前两个Stage一样，再次完成同步。当您提交后，将会出现一个包含<strong class="text-info">13位数字的完成码</strong>。请将其复制作为您本次测试的编号。
+            </p>
+        </div>
+
       </div>
       
       <!-- develop usage -->
@@ -322,14 +347,15 @@
       <br />
       <br />
       <br />
-        <p class="text-primary text-center" >
-        Design and Develop by <a target="_blank" href="https://hcslab.cuhk.edu.cn">Human-Cloud System Laboratory</a>. All Right Reserved © 2020 ｜ <a target="_blank" href="https://github.com/HCSLab">Source Code</a>
-        </p>
         <p class="text-primary text-center">
           Powered by
-          <a target="_blank" href="https://vuejs.org/">Vue.js</a>,
-          <a target="_blank" href="https://getbootstrap.com/">Bootstrap</a>,
+          <a target="_blank" href="https://vuejs.org/">Vue</a>,
+          <a target="_blank" href="https://github.com/bootstrap-vue/bootstrap-vue">Bootstrap-Vue</a>,
+          <a target="_blank" href="https://bootswatch.com/">Bootswatch</a>,
           <a target="_blank" href="https://github.com/sampotts/plyr">sampotts/plyr</a> & coffee ☕️
+        </p>
+        <p class="text-primary text-center" >
+          Design and Develop by <a target="_blank" href="https://hcslab.cuhk.edu.cn">Human-Cloud System Lab@CUHK(SZ)</a>. All Right Reserved © 2020 ｜ <a target="_blank" href="https://github.com/HCSLab">Source Code(GitHub)</a>
         </p>
     </div>
   </div>
@@ -374,7 +400,7 @@ export default {
         stage_4_actions: null,
         timestamp: null,
         video_name: null,
-        rand: null,
+        delay: null,
         location: null,
         device: null,
         os: null,
@@ -419,11 +445,11 @@ export default {
   created() {
     this.isplaying = false;
     // for dev
-    this.base_url = "http://localhost:3000";
+    // this.base_url = "http://localhost:3000";
     // this.base_url = "http://47.242.3.232:3000";
 
     // for deploy
-    // this.base_url = "";
+    this.base_url = "";
 
     this.delay = Math.random() * 20 - 10;
     // generate session_id by time
@@ -464,7 +490,7 @@ export default {
     this.upload_result.os = device["os"];
     this.upload_result.device = device["type"];
     this.is_desktop = device.desktop();
-    this.upload_result.rand = this.delay;
+    this.upload_result.delay = this.delay.toString();
 
     //for dev
     // console.log(this.upload_result)
